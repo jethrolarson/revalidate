@@ -1,0 +1,9 @@
+.field{margin: 1em 0;}
+.fieldError{
+	color: red; 
+	display: none;
+}
+.fieldErrorOn{display: inline;}
+.formSummary{color: red;}
+.radGroup{padding: 0;margin: 0}
+.radGroup li{list-style: none;padding:0;}
