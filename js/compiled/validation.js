@@ -22,7 +22,11 @@
     this.$field = $(field);
     this.$errorMessage = $(this.settings.messageTag).html(this.settings.message).data('fvField', this.$field);
     if (typeof this.settings.position === 'string') {
-      this.$field[this.settings.position](this.$errorMessage);
+      if (this.settings.position === 'lastSibling') {
+        this.$field.parent().append(this.$errorMessage);
+      } else {
+        this.$field[this.settings.position](this.$errorMessage);
+      }
     } else {
       this.settings.position.call(this.field, this);
     }
@@ -67,6 +71,7 @@
       scrollToErrorField: true,
       scrollDuration: 100
     }, settings);
+    this.fieldValidators = [];
     this.form = form;
     this.$form = $(form);
     this.bindEvents();
@@ -79,7 +84,6 @@
     },
     valid: false,
     formSubmitting: false,
-    fieldValidators: [],
     validate: function() {
       var field, _i, _len, _ref;
       this.valid = true;
@@ -119,7 +123,7 @@
               return true;
             } else {
               if (this.settings.scrollToErrorField) {
-                $firstInvalid = $('.fieldErrorOn').eq(0).data('fvField');
+                $firstInvalid = this.$form.find('.fieldErrorOn').eq(0).data('fvField');
                 $.scrollTo($firstInvalid, {
                   offset: {
                     top: -10

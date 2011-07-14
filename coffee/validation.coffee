@@ -1,3 +1,4 @@
+#coffee -o js/compiled --watch coffee/
 ###
 Revalidate - Validation framework for jQuery
 License: MIT, GPL, or WTFPL
@@ -21,7 +22,10 @@ FieldValidator = (field,settings)->
 		.html(@settings.message)
 		.data('fvField', @$field)
 	if typeof @settings.position is 'string'
-		@$field[@settings.position] @$errorMessage
+		if @settings.position is 'lastSibling'
+			@$field.parent().append @$errorMessage
+		else
+			@$field[@settings.position] @$errorMessage
 	else
 		@settings.position.call @field, @
 	@bindEvents()
@@ -57,6 +61,7 @@ FormValidator = (form, settings)->
 		scrollToErrorField: true
 		scrollDuration: 100
 	, settings
+	@fieldValidators = []
 	@form = form
 	@$form = $ form
 	@bindEvents()
@@ -67,7 +72,6 @@ FormValidator.prototype = $.extend FormValidator.prototype,
 		@
 	valid: false
 	formSubmitting: false
-	fieldValidators:[]
 	validate: ->
 		@valid = true
 		for field in @fieldValidators
@@ -95,7 +99,7 @@ FormValidator.prototype = $.extend FormValidator.prototype,
 						return true
 					else
 						if @settings.scrollToErrorField
-							$firstInvalid = $('.fieldErrorOn').eq(0).data('fvField')
+							$firstInvalid = @$form.find('.fieldErrorOn').eq(0).data('fvField')
 							$.scrollTo $firstInvalid, 
 								offset: {top: -10}
 								duration: @settings.scrollDuration
