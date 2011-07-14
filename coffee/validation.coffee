@@ -1,3 +1,9 @@
+###
+Revalidate - Validation framework for jQuery
+License: MIT, GPL, or WTFPL
+Author: @JethroLarson
+###
+
 ### Field Validator ###
 FieldValidator = (field,settings)->
 	@settings = $.extend 
