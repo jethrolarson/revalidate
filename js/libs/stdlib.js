@@ -1,5 +1,9 @@
 $.scrollTo = function(selector,settings){
-	settings = $.extend({offsetY:0},settings);
+	settings = $.extend({
+		offsetY:0, 
+		callback:$.noop(),
+		speed: 0
+	},settings);
 	var pos = $(selector).offset();
-	window.scrollTo(pos.left,pos.top+settings.offsetY);
+	$('html,body').animate({ scrollTop: pos.top + settings.offset}, settings.speed, 'swing',settings.callback);
 };

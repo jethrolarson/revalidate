@@ -30,3 +30,13 @@ $ ->
 		validateOn: 'blur'
 		message: 'Please date format: MM/DD/YYYY'
 	@
+	
+	$('#ridiculous').fieldValidator
+		validator: (fv)->
+			valid = false
+			for input in fv.$field.find('input')
+				val = +input.value
+				valid = true if val > 5
+			valid
+		position: 'append'
+		message: "you didn't do the thing"

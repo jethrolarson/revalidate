@@ -38,6 +38,23 @@
       validateOn: 'blur',
       message: 'Please date format: MM/DD/YYYY'
     });
-    return this;
+    this;
+    return $('#ridiculous').fieldValidator({
+      validator: function(fv) {
+        var input, val, valid, _i, _len, _ref;
+        valid = false;
+        _ref = fv.$field.find('input');
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          input = _ref[_i];
+          val = +input.value;
+          if (val > 5) {
+            valid = true;
+          }
+        }
+        return valid;
+      },
+      position: 'append',
+      message: "you didn't do the thing"
+    });
   });
 }).call(this);

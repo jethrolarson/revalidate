@@ -6,7 +6,8 @@
       position: 'after',
       message: 'There is an error with this field',
       validateOn: null,
-      revalidateOn: null
+      revalidateOn: null,
+      messageClass: ''
     }, settings);
     if (this.settings.validator) {
       this.validator = this.settings.validator;
@@ -14,7 +15,7 @@
     this.field = field;
     this.$field = $(field);
     this.$errorMessage = $('<em/>', {
-      'class': 'fieldError',
+      'class': 'fieldError ' + this.settings.messageClass,
       'html': this.settings.message
     });
     if (typeof this.settings.position === 'string') {
@@ -45,12 +46,16 @@
       return !!this.value;
     },
     bindEvents: function() {
-      this.settings.validateOn && this.$field.bind(this.settings.validateOn, __bind(function() {
+      this.$field.bind('validate', __bind(function() {
         this.validate();
         return true;
       }, this));
+      this.settings.validateOn && this.$field.bind(this.settings.validateOn, __bind(function() {
+        this.$field.trigger('validate');
+        return true;
+      }, this));
       return this.settings.revalidateOn && this.$field.bind(this.settings.revalidateOn, __bind(function() {
-        !this.valid && this.validate();
+        !this.valid && this.$field.trigger('validate');
         return true;
       }, this));
     }
@@ -58,19 +63,10 @@
   /* Form Validation Constructor */
   FormValidator = function(form, settings) {
     this.settings = $.extend({
-      showSummary: true,
-      summaryText: 'There were 1 or more errors on the form, check your input and try again.',
       skipToErrorField: true
     }, settings);
     this.form = form;
     this.$form = $(form);
-    if (this.settings.showSummary) {
-      this.$submit = this.$form.find(':submit:last');
-      this.$summary = $('<div/>', {
-        "class": 'formSummary',
-        text: this.settings.summaryText
-      }).hide().insertAfter(this.$submit);
-    }
     this.bindEvents();
     return this;
   };
@@ -94,6 +90,19 @@
       }
       return this.valid;
     },
+    checkAll: function() {
+      var field, _i, _len, _ref;
+      this.valid = true;
+      _ref = this.fieldValidators;
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        field = _ref[_i];
+        if (!field.check()) {
+          this.valid = false;
+          break;
+        }
+      }
+      return this.valid;
+    },
     bindEvents: function() {
       return this.$form.bind({
         submit: __bind(function() {
@@ -110,12 +119,12 @@
               if (this.settings.skipToErrorField) {
                 $firstInvalid = $('.invalid').eq(0);
                 $.scrollTo($firstInvalid, {
-                  offsetY: -10
+                  offsetY: -10,
+                  speed: 100,
+                  callback: function() {
+                    return $firstInvalid.focus();
+                  }
                 });
-                $firstInvalid.focus();
-              }
-              if (this.settings.showSummary) {
-                this.$summary.show();
               }
               return false;
             }

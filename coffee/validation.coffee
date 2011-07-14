@@ -5,12 +5,13 @@ FieldValidator = (field,settings)->
 		message: 'There is an error with this field'
 		validateOn: null #list of space separated events to validate on
 		revalidateOn: null #these will only cause validate() if there is already an error on the field
+		messageClass: ''#extra class added to message for css needs
 	, settings
 	@validator = @settings.validator if @settings.validator
 	@field = field
 	@$field = $ field
 	@$errorMessage = $ '<em/>',
-		'class':'fieldError'
+		'class':'fieldError '+@settings.messageClass
 		'html': @settings.message
 	if typeof @settings.position is 'string'
 		@$field[@settings.position] @$errorMessage
@@ -34,26 +35,24 @@ FieldValidator.prototype = $.extend FieldValidator.prototype,
 	check: -> @valid = @field.disabled or @validator.call @field, @
 	validator: -> !!this.value 
 	bindEvents: ->
-		@settings.validateOn and @$field.bind @settings.validateOn, => 
+		@$field.bind 'validate', =>
 			@validate()
 			true
+		@settings.validateOn and @$field.bind @settings.validateOn, => 
+			@$field.trigger 'validate'
+			true
 		@settings.revalidateOn and @$field.bind @settings.revalidateOn, => 
-			not @valid and @validate()
+			not @valid and @$field.trigger 'validate'
 			true
 			
 
 ### Form Validation Constructor ###
 FormValidator = (form, settings)->
-	@settings = $.extend 
-		showSummary: true
-		summaryText: 'There were 1 or more errors on the form, check your input and try again.'
+	@settings = $.extend
 		skipToErrorField: true
-	,settings
+	, settings
 	@form = form
 	@$form = $ form
-	if @settings.showSummary
-		@$submit = @$form.find ':submit:last'
-		@$summary = $('<div/>', class: 'formSummary', text: @settings.summaryText).hide().insertAfter @$submit
 	@bindEvents()
 	@
 FormValidator.prototype = $.extend FormValidator.prototype,
@@ -67,7 +66,14 @@ FormValidator.prototype = $.extend FormValidator.prototype,
 		@valid = true
 		for field in @fieldValidators
 			if not field.validate()
-				@valid = false 
+				@valid = false
+		@valid
+	checkAll: ->
+		@valid = true
+		for field in @fieldValidators
+			if not field.check()
+				@valid = false
+				break
 		@valid
 	bindEvents: ->
 		@$form.bind
@@ -84,10 +90,11 @@ FormValidator.prototype = $.extend FormValidator.prototype,
 					else
 						if @settings.skipToErrorField
 							$firstInvalid = $('.invalid').eq(0)
-							$.scrollTo $firstInvalid, offsetY: -10
-							$firstInvalid.focus()
-						if @settings.showSummary
-							@$summary.show()
+							$.scrollTo $firstInvalid, 
+								offsetY: -10
+								speed: 100
+								callback: ->
+									$firstInvalid.focus()
 						return false
 
 ### jQuery pluginize ###
