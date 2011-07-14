@@ -7,17 +7,15 @@
       message: 'There is an error with this field',
       validateOn: null,
       revalidateOn: null,
-      messageClass: ''
+      messageClass: '',
+      messageTag: '<em class="fieldError"/>'
     }, settings);
     if (this.settings.validator) {
       this.validator = this.settings.validator;
     }
     this.field = field;
     this.$field = $(field);
-    this.$errorMessage = $('<em/>', {
-      'class': 'fieldError ' + this.settings.messageClass,
-      'html': this.settings.message
-    });
+    this.$errorMessage = $(this.settings.messageTag).html(this.settings.message).data('fvField', this.$field);
     if (typeof this.settings.position === 'string') {
       this.$field[this.settings.position](this.$errorMessage);
     } else {
@@ -32,10 +30,8 @@
       this.check();
       if (!this.valid) {
         this.$errorMessage.addClass('fieldErrorOn');
-        this.$field.addClass('invalid');
       } else {
         this.$errorMessage.removeClass('fieldErrorOn');
-        this.$field.addClass('valid');
       }
       return this.valid;
     },
@@ -117,7 +113,7 @@
               return true;
             } else {
               if (this.settings.skipToErrorField) {
-                $firstInvalid = $('.invalid').eq(0);
+                $firstInvalid = $('.fieldErrorOn').eq(0).data('fvField');
                 $.scrollTo($firstInvalid, {
                   offsetY: -10,
                   speed: 100,

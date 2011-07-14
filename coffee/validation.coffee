@@ -6,13 +6,14 @@ FieldValidator = (field,settings)->
 		validateOn: null #list of space separated events to validate on
 		revalidateOn: null #these will only cause validate() if there is already an error on the field
 		messageClass: ''#extra class added to message for css needs
+		messageTag: '<em class="fieldError"/>' #If you need to use a div or a ul for some reason
 	, settings
 	@validator = @settings.validator if @settings.validator
 	@field = field
 	@$field = $ field
-	@$errorMessage = $ '<em/>',
-		'class':'fieldError '+@settings.messageClass
-		'html': @settings.message
+	@$errorMessage = $(@settings.messageTag)
+		.html(@settings.message)
+		.data('fvField', @$field)
 	if typeof @settings.position is 'string'
 		@$field[@settings.position] @$errorMessage
 	else
@@ -26,11 +27,9 @@ FieldValidator.prototype = $.extend FieldValidator.prototype,
 		if not @valid
 			#show Invalid Message
 			@$errorMessage.addClass 'fieldErrorOn'
-			@$field.addClass 'invalid'
 		else
 			#hide Invalid Message
 			@$errorMessage.removeClass 'fieldErrorOn'
-			@$field.addClass 'valid'
 		@valid
 	check: -> @valid = @field.disabled or @validator.call @field, @
 	validator: -> !!this.value 
@@ -89,12 +88,12 @@ FormValidator.prototype = $.extend FormValidator.prototype,
 						return true
 					else
 						if @settings.skipToErrorField
-							$firstInvalid = $('.invalid').eq(0)
+							$firstInvalid = $('.fieldErrorOn').eq(0).data('fvField')
 							$.scrollTo $firstInvalid, 
 								offsetY: -10
 								speed: 100
 								callback: ->
-									$firstInvalid.focus()
+									$firstInvalid.focus() #do I want to drill down to first focusable element if this isn't?
 						return false
 
 ### jQuery pluginize ###
