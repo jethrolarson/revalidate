@@ -48,7 +48,8 @@ FieldValidator.prototype = $.extend FieldValidator.prototype,
 ### Form Validation Constructor ###
 FormValidator = (form, settings)->
 	@settings = $.extend
-		skipToErrorField: true
+		scrollToErrorField: true
+		scrollDuration: 100
 	, settings
 	@form = form
 	@$form = $ form
@@ -87,12 +88,12 @@ FormValidator.prototype = $.extend FormValidator.prototype,
 						alert 'submiting'
 						return true
 					else
-						if @settings.skipToErrorField
+						if @settings.scrollToErrorField
 							$firstInvalid = $('.fieldErrorOn').eq(0).data('fvField')
 							$.scrollTo $firstInvalid, 
-								offsetY: -10
-								speed: 100
-								callback: ->
+								offset: {top: -10}
+								duration: @settings.scrollDuration
+								onAfter: ->
 									$firstInvalid.focus() #do I want to drill down to first focusable element if this isn't?
 						return false
 
@@ -107,4 +108,21 @@ $.fn.fieldValidator = (settings)->
 		fieldValidator = new FieldValidator @, settings
 		$(this).data('fieldvalidator', fieldValidator)
 			.closest('form').data('formvalidator').addFieldValidator fieldValidator
-		
+
+
+###
+This will default to http://flesler.blogspot.com/2007/10/jqueryscrollto.html if included. I've tried to use a subset of the same api.
+###
+$.scrollTo ?= (selector,settings)->
+	settings = $.extend
+		offset: {top:0}, 
+		onAfter: $.noop(),
+		duration: 0
+	,settings
+	pos = $(selector).offset()
+	$('html,body').animate {
+		scrollTop: pos.top + settings.offset.top
+	}
+	, settings.duration
+	, 'swing'
+	, settings.onAfter

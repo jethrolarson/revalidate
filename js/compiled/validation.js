@@ -1,5 +1,5 @@
 (function() {
-  /* Field Validator */  var FieldValidator, FormValidator;
+  /* Field Validator */  var FieldValidator, FormValidator, _ref;
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
   FieldValidator = function(field, settings) {
     this.settings = $.extend({
@@ -59,7 +59,8 @@
   /* Form Validation Constructor */
   FormValidator = function(form, settings) {
     this.settings = $.extend({
-      skipToErrorField: true
+      scrollToErrorField: true,
+      scrollDuration: 100
     }, settings);
     this.form = form;
     this.$form = $(form);
@@ -112,12 +113,14 @@
               alert('submiting');
               return true;
             } else {
-              if (this.settings.skipToErrorField) {
+              if (this.settings.scrollToErrorField) {
                 $firstInvalid = $('.fieldErrorOn').eq(0).data('fvField');
                 $.scrollTo($firstInvalid, {
-                  offsetY: -10,
-                  speed: 100,
-                  callback: function() {
+                  offset: {
+                    top: -10
+                  },
+                  duration: this.settings.scrollDuration,
+                  onAfter: function() {
                     return $firstInvalid.focus();
                   }
                 });
@@ -141,5 +144,26 @@
       fieldValidator = new FieldValidator(this, settings);
       return $(this).data('fieldvalidator', fieldValidator).closest('form').data('formvalidator').addFieldValidator(fieldValidator);
     });
+  };
+  /*
+  This will default to http://flesler.blogspot.com/2007/10/jqueryscrollto.html if included. I've tried to use a subset of the same api.
+  */
+    if ((_ref = $.scrollTo) != null) {
+    _ref;
+  } else {
+    $.scrollTo = function(selector, settings) {
+      var pos;
+      settings = $.extend({
+        offset: {
+          top: 0
+        },
+        onAfter: $.noop(),
+        duration: 0
+      }, settings);
+      pos = $(selector).offset();
+      return $('html,body').animate({
+        scrollTop: pos.top + settings.offset.top
+      }, settings.duration, 'swing', settings.onAfter);
+    };
   };
 }).call(this);
