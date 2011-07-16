@@ -40,6 +40,7 @@
         this.$field.attr('aria-label', this.settings.message);
       } else {
         this.$field.removeAttr('aria-label');
+        this.$field.trigger('valid');
       }
       return this.valid;
     },
@@ -72,7 +73,7 @@
             return $tooltip.css(pos);
           }
         }, this),
-        focusout: __bind(function() {
+        'focusout valid': __bind(function() {
           return $tooltip.hide();
         }, this)
       });
@@ -140,7 +141,6 @@
           } else {
             if (this.validate()) {
               this.formSubmitting = true;
-              alert('submiting');
               return true;
             } else {
               if (this.settings.scrollToErrorField) {

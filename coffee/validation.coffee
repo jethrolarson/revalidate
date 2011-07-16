@@ -36,6 +36,7 @@ FieldValidator.prototype = $.extend FieldValidator.prototype,
 		else
 			#remove error message
 			@$field.removeAttr 'aria-label'
+			@$field.trigger 'valid'
 		
 		@valid
 	check: -> @valid = @field.disabled or @validator.call @field, @
@@ -53,14 +54,15 @@ FieldValidator.prototype = $.extend FieldValidator.prototype,
 					pos = @$field.offset()
 					$tooltip.show()
 					h = $tooltip.outerHeight()
+					#if it would be offscreen put it below
 					if pos.top - h < window.scrollY
 						$tooltip.addClass 'bottom'
 						pos.top += @$field.outerHeight()
-					else
+					else #else on top of field
 						$tooltip.removeClass 'bottom'
 						pos.top -= h
 					$tooltip.css pos
-			focusout: =>
+			'focusout valid': =>
 				$tooltip.hide()
 				
 		@settings.validateOn and @$field.bind @settings.validateOn, => 
@@ -111,7 +113,6 @@ FormValidator.prototype = $.extend FormValidator.prototype,
 				else
 					if @validate()
 						@formSubmitting = true
-						alert 'submiting'
 						return true
 					else
 						if @settings.scrollToErrorField

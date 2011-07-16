@@ -36,6 +36,7 @@
         return !this.value.length || /\d{1,2}\/\d{1,2}\/\d{4}/.test(this.value);
       },
       validateOn: 'blur',
+      revalidateOn: 'keyup',
       message: 'Invalid date. Use MM/DD/YYYY'
     });
     this;
