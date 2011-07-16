@@ -4,54 +4,70 @@ Revalidate - Validation framework for jQuery
 License: MIT, GPL, or WTFPL
 Author: @JethroLarson
 ###
+$tooltipContent = $ '<div id="validatorTooltipContent"/>'
+$tooltip = $('<div id="validatorTooltip">').append($tooltipContent).append('<div class="carrotBottom"><div></div></div>').prepend('<div class="carrotTop"><div></div></div>').appendTo 'html'
 
 ### Field Validator ###
 FieldValidator = (field,settings)->
 	@settings = $.extend 
-		position: 'after' #sting matching a jquey positioning method or a function to be called
 		message: 'There is an error with this field'
 		validateOn: null #list of space separated events to validate on
 		revalidateOn: null #these will only cause validate() if there is already an error on the field
-		messageClass: ''#extra class added to message for css needs
-		messageTag: '<em class="fieldError"/>' #If you need to use a div or a ul for some reason
 	, settings
 	@validator = @settings.validator if @settings.validator
 	@field = field
 	@$field = $ field
-	@$errorMessage = $(@settings.messageTag)
-		.html(@settings.message)
-		.data('fvField', @$field)
-	if typeof @settings.position is 'string'
-		if @settings.position is 'lastSibling'
-			@$field.parent().append @$errorMessage
-		else
-			@$field[@settings.position] @$errorMessage
-	else
-		@settings.position.call @field, @
 	@bindEvents()
 	@
 FieldValidator.prototype = $.extend FieldValidator.prototype,
 	valid: true
 	validate: ->
 		@check()
+		fieldValid = true
+		#check if any validators attached to this element are not @valid
+		for fv in @$field.data('fieldvalidators')
+			fieldValid = false if not fv.valid
+		@$field.toggleClass 'invalid', not fieldValid
+		
 		if not @valid
-			#show Invalid Message
-			@$errorMessage.addClass 'fieldErrorOn'
+			#set error message
+			@$field.attr 'aria-label', @settings.message
+			
 		else
-			#hide Invalid Message
-			@$errorMessage.removeClass 'fieldErrorOn'
+			#remove error message
+			@$field.removeAttr 'aria-label'
+		
 		@valid
 	check: -> @valid = @field.disabled or @validator.call @field, @
 	validator: -> !!this.value 
 	bindEvents: ->
-		@$field.bind 'validate', =>
+		@$field.bind 
+			validate: =>
+				@validate()
+				true
+			#show message
+			focusin: =>
+				if not @valid
+					$tooltipContent.html @settings.message 
+					#position the tooltip
+					pos = @$field.offset()
+					$tooltip.show()
+					h = $tooltip.outerHeight()
+					if pos.top - h < window.scrollY
+						$tooltip.addClass 'bottom'
+						pos.top += @$field.outerHeight()
+					else
+						$tooltip.removeClass 'bottom'
+						pos.top -= h
+					$tooltip.css pos
+			focusout: =>
+				$tooltip.hide()
+				
+		@settings.validateOn and @$field.bind @settings.validateOn, => 
 			@validate()
 			true
-		@settings.validateOn and @$field.bind @settings.validateOn, => 
-			@$field.trigger 'validate'
-			true
 		@settings.revalidateOn and @$field.bind @settings.revalidateOn, => 
-			not @valid and @$field.trigger 'validate'
+			not @valid and @validate()
 			true
 			
 
@@ -99,12 +115,12 @@ FormValidator.prototype = $.extend FormValidator.prototype,
 						return true
 					else
 						if @settings.scrollToErrorField
-							$firstInvalid = @$form.find('.fieldErrorOn').eq(0).data('fvField')
+							$firstInvalid = @$form.find('.invalid').eq(0)
 							$.scrollTo $firstInvalid, 
-								offset: {top: -10}
+								offset: {top: -42}
 								duration: @settings.scrollDuration
 								onAfter: ->
-									$firstInvalid.focus() #do I want to drill down to first focusable element if this isn't?
+									$firstInvalid.focusin().focus() #do I want to drill down to first focusable element if this isn't?
 						return false
 
 ### jQuery pluginize ###
@@ -116,7 +132,10 @@ $.fn.formValidator = -> #TODO add settings
 $.fn.fieldValidator = (settings)->
 	@each ->
 		fieldValidator = new FieldValidator @, settings
-		$(this).data('fieldvalidator', fieldValidator)
+		$this = $(this)
+		validators = ($this.data('fieldvalidators') or [])
+		validators.push fieldValidator
+		$this.data('fieldvalidators', validators)
 			.closest('form').data('formvalidator').addFieldValidator fieldValidator
 
 
@@ -130,9 +149,11 @@ $.scrollTo ?= (selector,settings)->
 		duration: 0
 	,settings
 	pos = $(selector).offset()
-	$('html,body').animate {
-		scrollTop: pos.top + settings.offset.top
-	}
-	, settings.duration
-	, 'swing'
-	, settings.onAfter
+	$('html,body').animate(
+		{
+			scrollTop: pos.top + settings.offset.top
+		}
+		, settings.duration
+		, 'swing'
+		, settings.onAfter
+	)

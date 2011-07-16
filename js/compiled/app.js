@@ -16,7 +16,7 @@
         return fv.$field.parent().append(fv.$errorMessage);
       },
       revalidateOn: 'click',
-      message: 'You must not agree'
+      message: 'You must agree'
     });
     $('.radGroup.required').fieldValidator({
       validator: function(fv) {
@@ -36,7 +36,7 @@
         return !this.value.length || /\d{1,2}\/\d{1,2}\/\d{4}/.test(this.value);
       },
       validateOn: 'blur',
-      message: 'Please date format: MM/DD/YYYY'
+      message: 'Invalid date. Use MM/DD/YYYY'
     });
     this;
     return $('#ridiculous').fieldValidator({
@@ -54,6 +54,7 @@
         return valid;
       },
       position: 'append',
+      revalidateOn: 'focusout',
       message: "you didn't do the thing"
     });
   });

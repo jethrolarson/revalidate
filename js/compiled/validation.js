@@ -3,44 +3,43 @@
   Revalidate - Validation framework for jQuery
   License: MIT, GPL, or WTFPL
   Author: @JethroLarson
-  */
-  /* Field Validator */  var FieldValidator, FormValidator, _ref;
+  */  var $tooltip, $tooltipContent, FieldValidator, FormValidator, _ref;
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
+  $tooltipContent = $('<div id="validatorTooltipContent"/>');
+  $tooltip = $('<div id="validatorTooltip">').append($tooltipContent).append('<div class="carrotBottom"><div></div></div>').prepend('<div class="carrotTop"><div></div></div>').appendTo('html');
+  /* Field Validator */
   FieldValidator = function(field, settings) {
     this.settings = $.extend({
-      position: 'after',
       message: 'There is an error with this field',
       validateOn: null,
-      revalidateOn: null,
-      messageClass: '',
-      messageTag: '<em class="fieldError"/>'
+      revalidateOn: null
     }, settings);
     if (this.settings.validator) {
       this.validator = this.settings.validator;
     }
     this.field = field;
     this.$field = $(field);
-    this.$errorMessage = $(this.settings.messageTag).html(this.settings.message).data('fvField', this.$field);
-    if (typeof this.settings.position === 'string') {
-      if (this.settings.position === 'lastSibling') {
-        this.$field.parent().append(this.$errorMessage);
-      } else {
-        this.$field[this.settings.position](this.$errorMessage);
-      }
-    } else {
-      this.settings.position.call(this.field, this);
-    }
     this.bindEvents();
     return this;
   };
   FieldValidator.prototype = $.extend(FieldValidator.prototype, {
     valid: true,
     validate: function() {
+      var fieldValid, fv, _i, _len, _ref;
       this.check();
+      fieldValid = true;
+      _ref = this.$field.data('fieldvalidators');
+      for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+        fv = _ref[_i];
+        if (!fv.valid) {
+          fieldValid = false;
+        }
+      }
+      this.$field.toggleClass('invalid', !fieldValid);
       if (!this.valid) {
-        this.$errorMessage.addClass('fieldErrorOn');
+        this.$field.attr('aria-label', this.settings.message);
       } else {
-        this.$errorMessage.removeClass('fieldErrorOn');
+        this.$field.removeAttr('aria-label');
       }
       return this.valid;
     },
@@ -51,16 +50,38 @@
       return !!this.value;
     },
     bindEvents: function() {
-      this.$field.bind('validate', __bind(function() {
+      this.$field.bind({
+        validate: __bind(function() {
+          this.validate();
+          return true;
+        }, this),
+        focusin: __bind(function() {
+          var h, pos;
+          if (!this.valid) {
+            $tooltipContent.html(this.settings.message);
+            pos = this.$field.offset();
+            $tooltip.show();
+            h = $tooltip.outerHeight();
+            if (pos.top - h < window.scrollY) {
+              $tooltip.addClass('bottom');
+              pos.top += this.$field.outerHeight();
+            } else {
+              $tooltip.removeClass('bottom');
+              pos.top -= h;
+            }
+            return $tooltip.css(pos);
+          }
+        }, this),
+        focusout: __bind(function() {
+          return $tooltip.hide();
+        }, this)
+      });
+      this.settings.validateOn && this.$field.bind(this.settings.validateOn, __bind(function() {
         this.validate();
         return true;
       }, this));
-      this.settings.validateOn && this.$field.bind(this.settings.validateOn, __bind(function() {
-        this.$field.trigger('validate');
-        return true;
-      }, this));
       return this.settings.revalidateOn && this.$field.bind(this.settings.revalidateOn, __bind(function() {
-        !this.valid && this.$field.trigger('validate');
+        !this.valid && this.validate();
         return true;
       }, this));
     }
@@ -123,14 +144,14 @@
               return true;
             } else {
               if (this.settings.scrollToErrorField) {
-                $firstInvalid = this.$form.find('.fieldErrorOn').eq(0).data('fvField');
+                $firstInvalid = this.$form.find('.invalid').eq(0);
                 $.scrollTo($firstInvalid, {
                   offset: {
-                    top: -10
+                    top: -42
                   },
                   duration: this.settings.scrollDuration,
                   onAfter: function() {
-                    return $firstInvalid.focus();
+                    return $firstInvalid.focusin().focus();
                   }
                 });
               }
@@ -149,9 +170,12 @@
   };
   $.fn.fieldValidator = function(settings) {
     return this.each(function() {
-      var fieldValidator;
+      var $this, fieldValidator, validators;
       fieldValidator = new FieldValidator(this, settings);
-      return $(this).data('fieldvalidator', fieldValidator).closest('form').data('formvalidator').addFieldValidator(fieldValidator);
+      $this = $(this);
+      validators = $this.data('fieldvalidators') || [];
+      validators.push(fieldValidator);
+      return $this.data('fieldvalidators', validators).closest('form').data('formvalidator').addFieldValidator(fieldValidator);
     });
   };
   /*

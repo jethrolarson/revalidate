@@ -11,7 +11,7 @@ $ ->
 		position: (fv)->
 			fv.$field.parent().append fv.$errorMessage
 		revalidateOn: 'click'
-		message: 'You must not agree'
+		message: 'You must agree'
 		
 	$('.radGroup.required').fieldValidator
 		validator: (fv)->
@@ -28,7 +28,7 @@ $ ->
 		validator: ->
 			not @value.length or /\d{1,2}\/\d{1,2}\/\d{4}/.test @value
 		validateOn: 'blur'
-		message: 'Please date format: MM/DD/YYYY'
+		message: 'Invalid date. Use MM/DD/YYYY'
 	@
 	
 	$('#ridiculous').fieldValidator
@@ -39,4 +39,5 @@ $ ->
 				valid = true if val > 5
 			valid
 		position: 'append'
+		revalidateOn: 'focusout'
 		message: "you didn't do the thing"
