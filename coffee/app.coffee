@@ -30,7 +30,6 @@ $ ->
 		validateOn: 'blur'
 		revalidateOn: 'keyup'
 		message: 'Invalid date. Use MM/DD/YYYY'
-	@
 	
 	$('#ridiculous').fieldValidator
 		validator: (fv)->
@@ -42,3 +41,4 @@ $ ->
 		position: 'append'
 		revalidateOn: 'focusout'
 		message: "you didn't do the thing"
+	@
