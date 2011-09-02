@@ -5,7 +5,7 @@ License: MIT, GPL, or WTFPL
 Author: @JethroLarson
 ###
 $tooltipContent = $ '<div id="validatorTooltipContent"/>'
-$tooltip = $('<div id="validatorTooltip">').append($tooltipContent).append('<div class="carrotBottom"><div></div></div>').prepend('<div class="carrotTop"><div></div></div>').appendTo 'html'
+$tooltip = $('<div id="validatorTooltip"/>').append($tooltipContent).append('<div class="carrotBottom"><div></div></div>').prepend('<div class="carrotTop"><div></div></div>').appendTo 'html'
 
 ### Field Validator ###
 FieldValidator = (field,settings)->
@@ -13,6 +13,7 @@ FieldValidator = (field,settings)->
 		message: 'There is an error with this field'
 		validateOn: null #list of space separated events to validate on
 		revalidateOn: null #these will only cause validate() if there is already an error on the field
+		ignoreHidden: true #if true then validation will be skipped on hidden fields
 	, settings
 	@validator = @settings.validator if @settings.validator
 	@field = field
@@ -21,6 +22,7 @@ FieldValidator = (field,settings)->
 	@
 FieldValidator.prototype = $.extend FieldValidator.prototype,
 	valid: true
+	disabled: false
 	validate: ->
 		@check()
 		fieldValid = true
@@ -39,7 +41,9 @@ FieldValidator.prototype = $.extend FieldValidator.prototype,
 			@$field.trigger 'valid'
 		
 		@valid
-	check: -> @valid = @field.disabled or @validator.call @field, @
+	check: ->
+		return @valid = true if @disabled or @settings.ignoreHidden and @$field.is(':hidden')
+		return @valid = @field.disabled or @validator.call @field, @
 	validator: -> !!this.value 
 	bindEvents: ->
 		@$field.bind 
@@ -51,6 +55,7 @@ FieldValidator.prototype = $.extend FieldValidator.prototype,
 				if not @valid
 					$tooltipContent.html @settings.message 
 					#position the tooltip
+					#TODO - take into consideration the body position:relative problem
 					pos = @$field.offset()
 					$tooltip.show()
 					h = $tooltip.outerHeight()
@@ -118,7 +123,7 @@ FormValidator.prototype = $.extend FormValidator.prototype,
 						if @settings.scrollToErrorField
 							$firstInvalid = @$form.find('.invalid').eq(0)
 							$.scrollTo $firstInvalid, 
-								offset: {top: -42}
+								offset: {top: -45}
 								duration: @settings.scrollDuration
 								onAfter: ->
 									$firstInvalid.focusin().focus() #do I want to drill down to first focusable element if this isn't?
@@ -134,7 +139,7 @@ $.fn.fieldValidator = (settings)->
 	@each ->
 		fieldValidator = new FieldValidator @, settings
 		$this = $(this)
-		validators = ($this.data('fieldvalidators') or [])
+		validators = $this.data('fieldvalidators') or []
 		validators.push fieldValidator
 		$this.data('fieldvalidators', validators)
 			.closest('form').data('formvalidator').addFieldValidator fieldValidator

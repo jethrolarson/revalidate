@@ -1,4 +1,5 @@
 $ ->
+  #Attach FormValidator to an element
 	$('form').formValidator()
 
 	$(':text.required').fieldValidator 

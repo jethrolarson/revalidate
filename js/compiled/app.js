@@ -39,8 +39,7 @@
       revalidateOn: 'keyup',
       message: 'Invalid date. Use MM/DD/YYYY'
     });
-    this;
-    return $('#ridiculous').fieldValidator({
+    $('#ridiculous').fieldValidator({
       validator: function(fv) {
         var input, val, valid, _i, _len, _ref;
         valid = false;
@@ -58,5 +57,6 @@
       revalidateOn: 'focusout',
       message: "you didn't do the thing"
     });
+    return this;
   });
 }).call(this);

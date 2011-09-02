@@ -11,6 +11,10 @@
     <div class="field">
       <input type="text" class="required" name="requiredtext" placeholder="Required Text"/>
     </div>
+    
+    <!--Shouldn't validate invisible fields by default, this can be overridden-->
+    <input type="text" class="required" style="display:none" name="hidden requiredtext"/>
+    
     <div class="field">
       <input type="text" class="required date" name="requiredtext" placeholder="Date: MM/DD/YYYY"/>
     </div>

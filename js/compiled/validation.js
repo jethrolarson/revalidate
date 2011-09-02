@@ -3,16 +3,18 @@
   Revalidate - Validation framework for jQuery
   License: MIT, GPL, or WTFPL
   Author: @JethroLarson
-  */  var $tooltip, $tooltipContent, FieldValidator, FormValidator, _ref;
+  */
+  var $tooltip, $tooltipContent, FieldValidator, FormValidator, _ref;
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
   $tooltipContent = $('<div id="validatorTooltipContent"/>');
-  $tooltip = $('<div id="validatorTooltip">').append($tooltipContent).append('<div class="carrotBottom"><div></div></div>').prepend('<div class="carrotTop"><div></div></div>').appendTo('html');
+  $tooltip = $('<div id="validatorTooltip"/>').append($tooltipContent).append('<div class="carrotBottom"><div></div></div>').prepend('<div class="carrotTop"><div></div></div>').appendTo('html');
   /* Field Validator */
   FieldValidator = function(field, settings) {
     this.settings = $.extend({
       message: 'There is an error with this field',
       validateOn: null,
-      revalidateOn: null
+      revalidateOn: null,
+      ignoreHidden: true
     }, settings);
     if (this.settings.validator) {
       this.validator = this.settings.validator;
@@ -24,6 +26,7 @@
   };
   FieldValidator.prototype = $.extend(FieldValidator.prototype, {
     valid: true,
+    disabled: false,
     validate: function() {
       var fieldValid, fv, _i, _len, _ref;
       this.check();
@@ -45,6 +48,9 @@
       return this.valid;
     },
     check: function() {
+      if (this.disabled || this.settings.ignoreHidden && this.$field.is(':hidden')) {
+        return this.valid = true;
+      }
       return this.valid = this.field.disabled || this.validator.call(this.field, this);
     },
     validator: function() {
@@ -147,7 +153,7 @@
                 $firstInvalid = this.$form.find('.invalid').eq(0);
                 $.scrollTo($firstInvalid, {
                   offset: {
-                    top: -42
+                    top: -45
                   },
                   duration: this.settings.scrollDuration,
                   onAfter: function() {
@@ -181,9 +187,7 @@
   /*
   This will default to http://flesler.blogspot.com/2007/10/jqueryscrollto.html if included. I've tried to use a subset of the same api.
   */
-    if ((_ref = $.scrollTo) != null) {
-    _ref;
-  } else {
+  if ((_ref = $.scrollTo) == null) {
     $.scrollTo = function(selector, settings) {
       var pos;
       settings = $.extend({
@@ -198,5 +202,5 @@
         scrollTop: pos.top + settings.offset.top
       }, settings.duration, 'swing', settings.onAfter);
     };
-  };
+  }
 }).call(this);
