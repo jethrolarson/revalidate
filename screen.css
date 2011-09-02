@@ -6,16 +6,11 @@ html,body{font: 14px sans-serif;}
 
 
 /*Required for plugin*/
-.fieldError{
-	color: red; 
-	display: none;
-}
-.fieldErrorOn{display: inline;}
 .invalid{
 	background: #ffc;
 }
 input[type=checkbox].invalid{outline: red 1px solid}
-#validatorTooltip{position: absolute;}
+#validatorTooltip{position: absolute; display: none;}
 #validatorTooltipContent{
 	box-shadow: 0 2px 2px rgba(0,0,0,.6);
 	padding: 8px;
@@ -33,6 +28,8 @@ input[type=checkbox].invalid{outline: red 1px solid}
 	width: 0;
 	margin: 0 0 0 8px;
 	position: relative;
+	/*no carrots for ie6*/
+	_display: none;
 }
 .carrotTop div,
 .carrotBottom div{
