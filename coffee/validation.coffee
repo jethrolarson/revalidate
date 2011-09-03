@@ -110,6 +110,9 @@ FormValidator = (form, settings)->
 	@settings = $.extend
 		scrollToErrorField: true
 		scrollDuration: 100
+		
+		### Prevents submitting the form multiple times if a request has already been sent ###
+		throttleSubmission: true
 	, settings
 	@fieldValidators = []
 	@form = form
@@ -138,7 +141,7 @@ FormValidator.prototype = $.extend FormValidator.prototype,
 	bindEvents: ->
 		@$form.bind
 			submit: =>
-				if @formSubmitting
+				if @settings.throttleSubmission and @formSubmitting
 					#should there be a timeout in case of error?
 					alert 'Just a second; form is already submitting.'
 					return false

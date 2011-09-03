@@ -115,7 +115,9 @@
   FormValidator = function(form, settings) {
     this.settings = $.extend({
       scrollToErrorField: true,
-      scrollDuration: 100
+      scrollDuration: 100,
+      /* Prevents submitting the form multiple times if a request has already been sent */
+      throttleSubmission: true
     }, settings);
     this.fieldValidators = [];
     this.form = form;
@@ -159,7 +161,7 @@
       return this.$form.bind({
         submit: __bind(function() {
           var $firstInvalid;
-          if (this.formSubmitting) {
+          if (this.settings.throttleSubmission && this.formSubmitting) {
             alert('Just a second; form is already submitting.');
             return false;
           } else {
