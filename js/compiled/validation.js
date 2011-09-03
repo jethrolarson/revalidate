@@ -8,14 +8,12 @@
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
   $tooltipContent = $('<div id="validatorTooltipContent"/>');
   $tooltip = $('<div id="validatorTooltip"/>').append($tooltipContent).append('<div class="carrotBottom"><div></div></div>').prepend('<div class="carrotTop"><div></div></div>').appendTo('html');
-  /* Field Validator */
+  /* 
+  Field Validator 
+  This object controlls events related to field validation
+  */
   FieldValidator = function(field, settings) {
-    this.settings = $.extend({
-      message: 'There is an error with this field',
-      validateOn: null,
-      revalidateOn: null,
-      ignoreHidden: true
-    }, settings);
+    this.settings = $.extend(FieldValidator.defaultSettings, settings);
     if (this.settings.validator) {
       this.validator = this.settings.validator;
     }
@@ -24,9 +22,30 @@
     this.bindEvents();
     return this;
   };
+  /* FieldValidator Default Settings */
+  FieldValidator.defaultSettings = {
+    /* Error message to display */
+    message: 'There is an error with this field',
+    /* List of space-separated events to validate on. e.g. "blur click mouseenter" */
+    validateOn: '',
+    /* 
+    	Same as validateOn except will only validate() if !this.valid. 
+    	Use case: You might want to immediately remove an error 
+    	message if a user enters a correct value but not show an error message until 
+    	they click submit. 
+    	*/
+    revalidateOn: '',
+    /* If true then validation will be skipped on hidden fields */
+    ignoreHidden: true,
+    /* Default validator; just does a falsy check on the value */
+    validator: function() {
+      return !!this.value;
+    }
+  };
   FieldValidator.prototype = $.extend(FieldValidator.prototype, {
     valid: true,
     disabled: false,
+    /* verifies that the field is valid and shows validation messages if necessary */
     validate: function() {
       var fieldValid, fv, _i, _len, _ref;
       this.check();
@@ -47,15 +66,14 @@
       }
       return this.valid;
     },
+    /* checks, sets, and returns this.valid */
     check: function() {
       if (this.disabled || this.settings.ignoreHidden && this.$field.is(':hidden')) {
         return this.valid = true;
       }
       return this.valid = this.field.disabled || this.validator.call(this.field, this);
     },
-    validator: function() {
-      return !!this.value;
-    },
+    /* Binds events to this.$field */
     bindEvents: function() {
       this.$field.bind({
         validate: __bind(function() {
@@ -168,12 +186,20 @@
       });
     }
   });
-  /* jQuery pluginize */
+  /* 
+  jQuery FormValidator plugin
+  Use this on any forms that you want to validate.
+  */
   $.fn.formValidator = function() {
     return this.each(function() {
       return $(this).data('formvalidator', new FormValidator(this));
     });
   };
+  /*
+  jQuery FieldValidator plugin
+  Use this to add new rules to your validation library
+  settings - See "FieldValidator Default Settings". 
+  */
   $.fn.fieldValidator = function(settings) {
     return this.each(function() {
       var $this, fieldValidator, validators;
@@ -185,6 +211,7 @@
     });
   };
   /*
+  Animated Page Scroll jQuery plugin
   This will default to http://flesler.blogspot.com/2007/10/jqueryscrollto.html if included. I've tried to use a subset of the same api.
   */
   if ((_ref = $.scrollTo) == null) {

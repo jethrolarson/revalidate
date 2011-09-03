@@ -7,22 +7,44 @@ Author: @JethroLarson
 $tooltipContent = $ '<div id="validatorTooltipContent"/>'
 $tooltip = $('<div id="validatorTooltip"/>').append($tooltipContent).append('<div class="carrotBottom"><div></div></div>').prepend('<div class="carrotTop"><div></div></div>').appendTo 'html'
 
-### Field Validator ###
+### 
+Field Validator 
+This object controlls events related to field validation
+###
 FieldValidator = (field,settings)->
-	@settings = $.extend 
-		message: 'There is an error with this field'
-		validateOn: null #list of space separated events to validate on
-		revalidateOn: null #these will only cause validate() if there is already an error on the field
-		ignoreHidden: true #if true then validation will be skipped on hidden fields
-	, settings
+	@settings = $.extend(FieldValidator.defaultSettings, settings)
 	@validator = @settings.validator if @settings.validator
 	@field = field
 	@$field = $ field
 	@bindEvents()
 	@
+
+### FieldValidator Default Settings ###
+FieldValidator.defaultSettings = {
+	### Error message to display ###
+	message: 'There is an error with this field'
+	
+	### List of space-separated events to validate on. e.g. "blur click mouseenter" ###
+	validateOn: '' 
+	
+	### 
+	Same as validateOn except will only validate() if !this.valid. 
+	Use case: You might want to immediately remove an error 
+	message if a user enters a correct value but not show an error message until 
+	they click submit. 
+	###
+	revalidateOn: '' 
+	
+	### If true then validation will be skipped on hidden fields ###
+	ignoreHidden: true 
+	
+	### Default validator; just does a falsy check on the value ###
+	validator: -> !!this.value 
+}
 FieldValidator.prototype = $.extend FieldValidator.prototype,
 	valid: true
 	disabled: false
+	### verifies that the field is valid and shows validation messages if necessary ###
 	validate: ->
 		@check()
 		fieldValid = true
@@ -36,17 +58,21 @@ FieldValidator.prototype = $.extend FieldValidator.prototype,
 			@$field.attr 'aria-label', @settings.message
 			
 		else
-			#remove error message
+			#! remove error message
 			@$field.removeAttr 'aria-label'
 			@$field.trigger 'valid'
 		
 		@valid
+
+	### checks, sets, and returns this.valid ###
 	check: ->
-		return @valid = true if @disabled or @settings.ignoreHidden and @$field.is(':hidden')
-		return @valid = @field.disabled or @validator.call @field, @
-	validator: -> !!this.value 
+		if @disabled or @settings.ignoreHidden and @$field.is(':hidden')
+			return @valid = true 
+		return @valid = @field.disabled or @validator.call(@field, @)
+
+	### Binds events to this.$field ###
 	bindEvents: ->
-		@$field.bind 
+		@$field.bind {
 			validate: =>
 				@validate()
 				true
@@ -54,8 +80,8 @@ FieldValidator.prototype = $.extend FieldValidator.prototype,
 			focusin: =>
 				if not @valid
 					$tooltipContent.html @settings.message 
-					#position the tooltip
 					#TODO - take into consideration the body position:relative problem
+					#position the tooltip
 					pos = @$field.offset()
 					$tooltip.show()
 					h = $tooltip.outerHeight()
@@ -69,14 +95,15 @@ FieldValidator.prototype = $.extend FieldValidator.prototype,
 					$tooltip.css pos
 			'focusout valid': =>
 				$tooltip.hide()
-				
-		@settings.validateOn and @$field.bind @settings.validateOn, => 
+		}		
+		@settings.validateOn and @$field.bind(@settings.validateOn, => 
 			@validate()
 			true
-		@settings.revalidateOn and @$field.bind @settings.revalidateOn, => 
+		)
+		@settings.revalidateOn and @$field.bind(@settings.revalidateOn, => 
 			not @valid and @validate()
 			true
-			
+		)
 
 ### Form Validation Constructor ###
 FormValidator = (form, settings)->
@@ -129,12 +156,20 @@ FormValidator.prototype = $.extend FormValidator.prototype,
 									$firstInvalid.focusin().focus() #do I want to drill down to first focusable element if this isn't?
 						return false
 
-### jQuery pluginize ###
-$.fn.formValidator = -> #TODO add settings
+### 
+jQuery FormValidator plugin
+Use this on any forms that you want to validate.
+###
+$.fn.formValidator = -> 
 	@each ->
 		#dual binding ftw
 		$(this).data 'formvalidator', new FormValidator @
-		
+
+###
+jQuery FieldValidator plugin
+Use this to add new rules to your validation library
+settings - See "FieldValidator Default Settings". 
+### 
 $.fn.fieldValidator = (settings)->
 	@each ->
 		fieldValidator = new FieldValidator @, settings
@@ -146,6 +181,7 @@ $.fn.fieldValidator = (settings)->
 
 
 ###
+Animated Page Scroll jQuery plugin
 This will default to http://flesler.blogspot.com/2007/10/jqueryscrollto.html if included. I've tried to use a subset of the same api.
 ###
 $.scrollTo ?= (selector,settings)->

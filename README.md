@@ -1,6 +1,6 @@
 ReValidate jQuery Framework
 ===========================
-Author: @jethrolarson
+Author: [@jethrolarson](http://twitter.com/jethrolarson)
 
 License
 -------
@@ -18,4 +18,4 @@ Contribute
 ----------
 This is a new library so please report any bugs you find.
 
-Original source is written in CoffeeScript so I wont merge pull requests that only change the generated js. I may rewrite them in the coffee if I feel like it though.
+Original source is written in CoffeeScript so I wont merge pull requests that only change the generated js. I may rewrite them in the coffee if I feel they are important or cool.
