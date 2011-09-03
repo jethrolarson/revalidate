@@ -19,3 +19,7 @@ Contribute
 This is a new library so please report any bugs you find.
 
 Original source is written in CoffeeScript so I wont merge pull requests that only change the generated js. I may rewrite them in the coffee if I feel they are important or cool.
+
+TODO
+----
+I would like to set up a test suite with qunit to test all the existing field validators and settings.
