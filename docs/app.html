@@ -1,0 +1,50 @@
+<!DOCTYPE html>  <html> <head>   <title>app.coffee</title>   <meta http-equiv="content-type" content="text/html; charset=UTF-8">   <link rel="stylesheet" media="all" href="docco.css" /> </head> <body>   <div id="container">     <div id="background"></div>            <div id="jump_to">         Jump To &hellip;         <div id="jump_wrapper">           <div id="jump_page">                                           <a class="source" href="app.html">                 app.coffee               </a>                                           <a class="source" href="unitTests.html">                 unitTests.coffee               </a>                                           <a class="source" href="validation.html">                 validation.coffee               </a>                        </div>         </div>       </div>          <table cellpadding="0" cellspacing="0">       <thead>         <tr>           <th class="docs">             <h1>               app.coffee             </h1>           </th>           <th class="code">           </th>         </tr>       </thead>       <tbody>                               <tr id="section-1">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-1">&#182;</a>               </div>                            </td>             <td class="code">               <div class="highlight"><pre><span class="nx">$</span> <span class="o">-&gt;</span></pre></div>             </td>           </tr>                               <tr id="section-2">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-2">&#182;</a>               </div>               <p>Attach FormValidator to an element</p>             </td>             <td class="code">               <div class="highlight"><pre>	<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;form&#39;</span><span class="p">).</span><span class="nx">formValidator</span><span class="p">()</span>
+
+	<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;:text.required&#39;</span><span class="p">).</span><span class="nx">fieldValidator</span> 
+		<span class="nv">validator: </span><span class="o">-&gt;</span> <span class="nx">$</span><span class="p">.</span><span class="nx">trim</span><span class="p">(</span><span class="nx">@value</span><span class="p">)</span>
+		<span class="nv">revalidateOn: </span><span class="s1">&#39;blur keyup&#39;</span>
+		<span class="nv">message: </span><span class="s1">&#39;This field is Required&#39;</span>
+
+	<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;:checkbox.required&#39;</span><span class="p">).</span><span class="nx">fieldValidator</span>
+		<span class="nv">validator: </span><span class="o">-&gt;</span> <span class="nx">@checked</span>
+		<span class="nv">position: </span><span class="nf">(fv)-&gt;</span>
+			<span class="nx">fv</span><span class="p">.</span><span class="nx">$field</span><span class="p">.</span><span class="nx">parent</span><span class="p">().</span><span class="nx">append</span> <span class="nx">fv</span><span class="p">.</span><span class="nx">$errorMessage</span>
+		<span class="nv">revalidateOn: </span><span class="s1">&#39;click&#39;</span>
+		<span class="nv">message: </span><span class="s1">&#39;You must agree&#39;</span>
+		
+	<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;.radGroup.required&#39;</span><span class="p">).</span><span class="nx">fieldValidator</span>
+		<span class="nv">validator: </span><span class="nf">(fv)-&gt;</span>
+			<span class="nx">fv</span><span class="p">.</span><span class="nx">$field</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;:checked&#39;</span><span class="p">).</span><span class="nx">length</span>
+		<span class="nv">revalidateOn: </span><span class="s1">&#39;click&#39;</span>
+		<span class="nv">position: </span><span class="s1">&#39;after&#39;</span>
+		<span class="nv">message: </span><span class="s1">&#39;Please choose one&#39;</span>
+		
+	<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;select.required&#39;</span><span class="p">).</span><span class="nx">fieldValidator</span>
+		<span class="nv">validator: </span><span class="o">-&gt;</span>
+			<span class="nx">@selectedIndex</span> <span class="o">&gt;</span> <span class="mi">0</span></pre></div>             </td>           </tr>                               <tr id="section-3">             <td class="docs">               <div class="pilwrap">                 <a class="pilcrow" href="#section-3">&#182;</a>               </div>               <h2>mm/dd/yyyy</h2>             </td>             <td class="code">               <div class="highlight"><pre>	<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;.date&#39;</span><span class="p">).</span><span class="nx">fieldValidator</span>
+		<span class="nv">validator: </span><span class="o">-&gt;</span>
+			<span class="o">not</span> <span class="nx">@value</span><span class="p">.</span><span class="nx">length</span> <span class="o">or</span> <span class="sr">/\d{1,2}\/\d{1,2}\/\d{4}/</span><span class="p">.</span><span class="nx">test</span> <span class="nx">@value</span>
+		<span class="nv">validateOn: </span><span class="s1">&#39;blur&#39;</span>
+		<span class="nv">revalidateOn: </span><span class="s1">&#39;keyup&#39;</span>
+		<span class="nv">message: </span><span class="s1">&#39;Invalid date. Use MM/DD/YYYY&#39;</span>
+	
+	<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;.matches&#39;</span><span class="p">).</span><span class="nx">fieldValidator</span>
+		<span class="nv">validator: </span><span class="o">-&gt;</span>
+			<span class="k">this</span><span class="p">.</span><span class="nx">value</span> <span class="o">==</span> <span class="nx">$</span><span class="p">(</span><span class="nx">$</span><span class="p">(</span><span class="k">this</span><span class="p">).</span><span class="nx">data</span> <span class="s1">&#39;data-target&#39;</span><span class="p">)</span>
+		<span class="nv">validateOn: </span><span class="s1">&#39;blur&#39;</span>
+		<span class="nv">revalidateOn: </span><span class="s1">&#39;keyup&#39;</span>
+		<span class="nv">message: </span><span class="s2">&quot;Doesn&#39;t match related field&quot;</span>
+
+	<span class="nx">$</span><span class="p">(</span><span class="s1">&#39;#ridiculous&#39;</span><span class="p">).</span><span class="nx">fieldValidator</span>
+		<span class="nv">validator: </span><span class="nf">(fv)-&gt;</span>
+			<span class="nv">valid = </span><span class="kc">false</span>
+			<span class="k">for</span> <span class="nx">input</span> <span class="k">in</span> <span class="nx">fv</span><span class="p">.</span><span class="nx">$field</span><span class="p">.</span><span class="nx">find</span><span class="p">(</span><span class="s1">&#39;input&#39;</span><span class="p">)</span>
+				<span class="nv">val = </span><span class="o">+</span><span class="nx">input</span><span class="p">.</span><span class="nx">value</span>
+				<span class="nv">valid = </span><span class="kc">true</span> <span class="k">if</span> <span class="nx">val</span> <span class="o">&gt;</span> <span class="mi">5</span>
+			<span class="nx">valid</span>
+		<span class="nv">position: </span><span class="s1">&#39;append&#39;</span>
+		<span class="nv">revalidateOn: </span><span class="s1">&#39;focusout&#39;</span>
+		<span class="nv">message: </span><span class="s2">&quot;you didn&#39;t do the thing&quot;</span>
+	<span class="err">@</span>
+
+</pre></div>             </td>           </tr>                </tbody>     </table>   </div> </body> </html> 
