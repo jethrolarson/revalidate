@@ -5,10 +5,12 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <title>Revalidate - jQuery validation Framework</title>
   <link rel="stylesheet" href="screen.css"/>
+	<link rel="stylesheet" href="validation.css"/>
 </head>
 <body>
   <form action="">
     <div class="field">
+			<label>Required Input</label>
       <input type="text" class="required" name="requiredtext" placeholder="Required Text"/>
     </div>
     
@@ -18,7 +20,7 @@
     <div class="field">
       <input type="text" class="required date" name="requiredtext" placeholder="Date: MM/DD/YYYY"/>
     </div>
-    <div class="field">
+    <div class="field cb">
       <input id="terms" type="checkbox" class="required" name="terms" />
       <label for="terms">I agree to terms</label>
     </div>
@@ -27,11 +29,11 @@
       <ul class="radGroup required">
         <li><input type="radio" name="rg" id="radioA"><label for="radioA">Male</label></li>
         <li><input type="radio" name="rg" id="radiob"><label for="radiob">Female</label></li>
-        <li><input type="radio" name="rg" id="radioc"><label for="radioc">Toys</label></li>
+        <li><input type="radio" name="rg" id="radioc"><label for="radioc">Devices</label></li>
       </ul>
     </div>
     <div class="field" id="ridiculous">
-      <strong>One of these fields must be filled in with a numeric value greater than 5 (example of weird validation requirement)</strong>
+      <strong>Weird validation requirement: One of these fields must be filled in with a numeric value greater than 5</strong>
       <div><input> <input> <input></div>
     </div>
     <button type="submit">Dominate</button>

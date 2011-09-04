@@ -3,7 +3,7 @@ $ ->
 	$('form').formValidator()
 
 	$(':text.required').fieldValidator 
-		validator: -> $.trim(@value).length
+		validator: -> $.trim(@value)
 		revalidateOn: 'blur keyup'
 		message: 'This field is Required'
 
@@ -24,7 +24,8 @@ $ ->
 	$('select.required').fieldValidator
 		validator: ->
 			@selectedIndex > 0
-			
+
+	### mm/dd/yyyy ###
 	$('.date').fieldValidator
 		validator: ->
 			not @value.length or /\d{1,2}\/\d{1,2}\/\d{4}/.test @value
@@ -32,6 +33,13 @@ $ ->
 		revalidateOn: 'keyup'
 		message: 'Invalid date. Use MM/DD/YYYY'
 	
+	$('.matches').fieldValidator
+		validator: ->
+			this.value == $($(this).data 'data-target')
+		validateOn: 'blur'
+		revalidateOn: 'keyup'
+		message: "Doesn't match related field"
+
 	$('#ridiculous').fieldValidator
 		validator: (fv)->
 			valid = false

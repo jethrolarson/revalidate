@@ -3,7 +3,7 @@
     $('form').formValidator();
     $(':text.required').fieldValidator({
       validator: function() {
-        return $.trim(this.value).length;
+        return $.trim(this.value);
       },
       revalidateOn: 'blur keyup',
       message: 'This field is Required'
@@ -31,6 +31,7 @@
         return this.selectedIndex > 0;
       }
     });
+    /* mm/dd/yyyy */
     $('.date').fieldValidator({
       validator: function() {
         return !this.value.length || /\d{1,2}\/\d{1,2}\/\d{4}/.test(this.value);
@@ -38,6 +39,14 @@
       validateOn: 'blur',
       revalidateOn: 'keyup',
       message: 'Invalid date. Use MM/DD/YYYY'
+    });
+    $('.matches').fieldValidator({
+      validator: function() {
+        return this.value === $($(this).data('data-target'));
+      },
+      validateOn: 'blur',
+      revalidateOn: 'keyup',
+      message: "Doesn't match related field"
     });
     $('#ridiculous').fieldValidator({
       validator: function(fv) {

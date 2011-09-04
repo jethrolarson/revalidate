@@ -29,7 +29,7 @@
     /* List of space-separated events to validate on. e.g. "blur click mouseenter" */
     validateOn: '',
     /* 
-    	Same as validateOn except will only validate() if !this.valid. 
+    	Same as validateOn except will only validate if the field is already in error. 
     	Use case: You might want to immediately remove an error 
     	message if a user enters a correct value but not show an error message until 
     	they click submit. 
@@ -37,7 +37,7 @@
     revalidateOn: '',
     /* If true then validation will be skipped on hidden fields */
     ignoreHidden: true,
-    /* Default validator; just does a falsy check on the value */
+    /* Default validator: does a falsy check on the value */
     validator: function() {
       return !!this.value;
     }
@@ -111,19 +111,23 @@
       }, this));
     }
   });
-  /* Form Validation Constructor */
+  /* 
+  Form Validation Constructor 
+  */
   FormValidator = function(form, settings) {
-    this.settings = $.extend({
-      scrollToErrorField: true,
-      scrollDuration: 100,
-      /* Prevents submitting the form multiple times if a request has already been sent */
-      throttleSubmission: true
-    }, settings);
+    this.settings = $.extend(FormValidator.defaultSettings, settings);
     this.fieldValidators = [];
     this.form = form;
     this.$form = $(form);
     this.bindEvents();
     return this;
+  };
+  FormValidator.defaultSettings = {
+    scrollToErrorField: true,
+    /* How long the error animated scroll takes, 0 is instant */
+    scrollDuration: 100,
+    /* Prevents submitting the form multiple times if a request has already been sent */
+    throttleSubmission: true
   };
   FormValidator.prototype = $.extend(FormValidator.prototype, {
     addFieldValidator: function(fv) {
@@ -214,7 +218,7 @@
   };
   /*
   Animated Page Scroll jQuery plugin
-  This will default to http://flesler.blogspot.com/2007/10/jqueryscrollto.html if included. I've tried to use a subset of the same api.
+  This will default to http://flesler.blogspot.com/2007/10/jqueryscrollto.html if included. I've tried to use a subset of the same api.j TODO test jquery.scrollTo compatibility
   */
   if ((_ref = $.scrollTo) == null) {
     $.scrollTo = function(selector, settings) {
@@ -229,7 +233,10 @@
       pos = $(selector).offset();
       return $('html,body').animate({
         scrollTop: pos.top + settings.offset.top
-      }, settings.duration, 'swing', settings.onAfter);
+      }, {
+        duration: settings.duration,
+        complete: settings.onAfter
+      });
     };
   }
 }).call(this);

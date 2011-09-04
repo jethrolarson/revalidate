@@ -1,4 +1,3 @@
-#coffee -o js/compiled --watch coffee/
 ###
 Revalidate - Validation framework for jQuery
 License: MIT, GPL, or WTFPL
@@ -28,7 +27,7 @@ FieldValidator.defaultSettings = {
 	validateOn: '' 
 	
 	### 
-	Same as validateOn except will only validate() if !this.valid. 
+	Same as validateOn except will only validate if the field is already in error. 
 	Use case: You might want to immediately remove an error 
 	message if a user enters a correct value but not show an error message until 
 	they click submit. 
@@ -38,7 +37,7 @@ FieldValidator.defaultSettings = {
 	### If true then validation will be skipped on hidden fields ###
 	ignoreHidden: true 
 	
-	### Default validator; just does a falsy check on the value ###
+	### Default validator: does a falsy check on the value ###
 	validator: -> !!this.value 
 }
 FieldValidator.prototype = $.extend FieldValidator.prototype,
@@ -105,20 +104,24 @@ FieldValidator.prototype = $.extend FieldValidator.prototype,
 			true
 		)
 
-### Form Validation Constructor ###
+### 
+Form Validation Constructor 
+###
 FormValidator = (form, settings)->
-	@settings = $.extend
-		scrollToErrorField: true
-		scrollDuration: 100
-		
-		### Prevents submitting the form multiple times if a request has already been sent ###
-		throttleSubmission: true
-	, settings
+	@settings = $.extend(FormValidator.defaultSettings, settings)
 	@fieldValidators = []
 	@form = form
 	@$form = $ form
 	@bindEvents()
 	@
+FormValidator.defaultSettings = {
+	scrollToErrorField: true
+	### How long the error animated scroll takes, 0 is instant ###
+	scrollDuration: 100
+	
+	### Prevents submitting the form multiple times if a request has already been sent ###
+	throttleSubmission: true
+}
 FormValidator.prototype = $.extend FormValidator.prototype,
 	addFieldValidator: (fv)->
 		@fieldValidators.push fv
@@ -182,10 +185,9 @@ $.fn.fieldValidator = (settings)->
 		$this.data('fieldvalidators', validators)
 			.closest('form').data('formvalidator').addFieldValidator fieldValidator
 
-
 ###
 Animated Page Scroll jQuery plugin
-This will default to http://flesler.blogspot.com/2007/10/jqueryscrollto.html if included. I've tried to use a subset of the same api.
+This will default to http://flesler.blogspot.com/2007/10/jqueryscrollto.html if included. I've tried to use a subset of the same api.j TODO test jquery.scrollTo compatibility
 ###
 $.scrollTo ?= (selector,settings)->
 	settings = $.extend
@@ -194,11 +196,10 @@ $.scrollTo ?= (selector,settings)->
 		duration: 0
 	,settings
 	pos = $(selector).offset()
-	$('html,body').animate(
-		{
+	$('html,body').animate({
 			scrollTop: pos.top + settings.offset.top
+		},{
+			duration: settings.duration
+			complete: settings.onAfter
 		}
-		, settings.duration
-		, 'swing'
-		, settings.onAfter
 	)
