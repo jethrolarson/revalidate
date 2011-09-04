@@ -1,75 +1,73 @@
-###
-Revalidate - Validation framework for jQuery
-License: MIT, GPL, or WTFPL
-Author: @JethroLarson
-###
+# Revalidate
+# ================
+# Validation framework for jQuery
+# -------------------------------
+# License: MIT, GPL, or WTFPL  
+# Author: [@JethroLarson](http://twitter.com/jethrolarson)
+
 $tooltipContent = $ '<div id="validatorTooltipContent"/>'
 $tooltip = $('<div id="validatorTooltip"/>').append($tooltipContent).append('<div class="carrotBottom"><div></div></div>').prepend('<div class="carrotTop"><div></div></div>').appendTo 'html'
 
-### 
-Field Validator 
-This object controlls events related to field validation
-###
-FieldValidator = (field,settings)->
-	@settings = $.extend(FieldValidator.defaultSettings, settings)
+# Field Validator 
+# -------------------------------
+# This object controlls events related to field validation
+FieldValidator = (field, settings)->
+	# ### FieldValidator Default Settings
+	@settings = $.extend({
+		# Error message to display
+		message: 'There is an error with this field'
+
+		# List of space-separated events to validate on. e.g. "blur click mouseenter"
+		validateOn: '' 
+
+		# Same as validateOn except will only validate if the field is already in error. 
+		# Use case: You might want to immediately remove an error 
+		# message if a user enters a correct value but not show an error message until 
+		# they click submit. 
+		revalidateOn: '' 
+
+		# If true then validation will be skipped on hidden fields
+		ignoreHidden: true 
+
+		# Default validator: does a falsy check on the value
+		validator: -> !!this.value 
+	}, settings)
 	@validator = @settings.validator if @settings.validator
 	@field = field
 	@$field = $ field
 	@bindEvents()
 	@
 
-### FieldValidator Default Settings ###
-FieldValidator.defaultSettings = {
-	### Error message to display ###
-	message: 'There is an error with this field'
-	
-	### List of space-separated events to validate on. e.g. "blur click mouseenter" ###
-	validateOn: '' 
-	
-	### 
-	Same as validateOn except will only validate if the field is already in error. 
-	Use case: You might want to immediately remove an error 
-	message if a user enters a correct value but not show an error message until 
-	they click submit. 
-	###
-	revalidateOn: '' 
-	
-	### If true then validation will be skipped on hidden fields ###
-	ignoreHidden: true 
-	
-	### Default validator: does a falsy check on the value ###
-	validator: -> !!this.value 
-}
 FieldValidator.prototype = $.extend FieldValidator.prototype,
 	valid: true
 	disabled: false
-	### verifies that the field is valid and shows validation messages if necessary ###
+	# verifies that the field is valid and shows validation messages if necessary
 	validate: ->
 		@check()
 		fieldValid = true
-		#check if any validators attached to this element are not @valid
+		# check if any validators attached to this element are not @valid
 		for fv in @$field.data('fieldvalidators')
 			fieldValid = false if not fv.valid
 		@$field.toggleClass 'invalid', not fieldValid
 		
 		if not @valid
-			#set error message
+			# set error message
 			@$field.attr 'aria-label', @settings.message
 			
 		else
-			#! remove error message
+			# remove error message
 			@$field.removeAttr 'aria-label'
 			@$field.trigger 'valid'
 		
 		@valid
 
-	### checks, sets, and returns this.valid ###
+	# checks, sets, and returns this.valid
 	check: ->
 		if @disabled or @settings.ignoreHidden and @$field.is(':hidden')
 			return @valid = true 
 		return @valid = @field.disabled or @validator.call(@field, @)
 
-	### Binds events to this.$field ###
+	# Binds events to this.$field
 	bindEvents: ->
 		@$field.bind {
 			validate: =>
@@ -104,24 +102,24 @@ FieldValidator.prototype = $.extend FieldValidator.prototype,
 			true
 		)
 
-### 
-Form Validation Constructor 
-###
+# Form Validation Constructor
+# -------------------------------
 FormValidator = (form, settings)->
-	@settings = $.extend(FormValidator.defaultSettings, settings)
+	# ### FormValidator Default Settings
+	@settings = $.extend({
+		scrollToErrorField: true
+		# How long the error animated scroll takes, 0 is instant
+		scrollDuration: 100
+
+		# Prevents submitting the form multiple times if a request has already been sent
+		throttleSubmission: true
+	}, settings)
 	@fieldValidators = []
 	@form = form
 	@$form = $ form
 	@bindEvents()
 	@
-FormValidator.defaultSettings = {
-	scrollToErrorField: true
-	### How long the error animated scroll takes, 0 is instant ###
-	scrollDuration: 100
-	
-	### Prevents submitting the form multiple times if a request has already been sent ###
-	throttleSubmission: true
-}
+
 FormValidator.prototype = $.extend FormValidator.prototype,
 	addFieldValidator: (fv)->
 		@fieldValidators.push fv
@@ -162,20 +160,23 @@ FormValidator.prototype = $.extend FormValidator.prototype,
 									$firstInvalid.focusin().focus() #do I want to drill down to first focusable element if this isn't?
 						return false
 
-### 
-jQuery FormValidator plugin
-Use this on any forms that you want to validate.
-###
+# jQuery Plugins
+# ==============
+
+# jQuery FormValidator plugin
+# ---------------------------
+# Use this on any forms that you want to validate.
+# See [FormValidator Default Settings](#form-validator-settings)
 $.fn.formValidator = -> 
 	@each ->
-		#dual binding ftw
+		# FormValidator Instance is stored in jquery data
 		$(this).data 'formvalidator', new FormValidator @
 
-###
-jQuery FieldValidator plugin
-Use this to add new rules to your validation library
-settings - See "FieldValidator Default Settings". 
-### 
+
+# jQuery FieldValidator plugin
+# ----------------------------
+# Use this to add new rules to your validation library
+# settings - See [FieldValidator Default Settings](#field-validator-settings). 
 $.fn.fieldValidator = (settings)->
 	@each ->
 		fieldValidator = new FieldValidator @, settings
@@ -185,10 +186,13 @@ $.fn.fieldValidator = (settings)->
 		$this.data('fieldvalidators', validators)
 			.closest('form').data('formvalidator').addFieldValidator fieldValidator
 
-###
-Animated Page Scroll jQuery plugin
-This will default to http://flesler.blogspot.com/2007/10/jqueryscrollto.html if included. I've tried to use a subset of the same api.j TODO test jquery.scrollTo compatibility
-###
+
+# Animated Page Scroll jQuery plugin
+# -------------------------------------
+# This will default to 
+# [Ariel's scrollTo Plugin](http://flesler.blogspot.com/2007/10/jqueryscrollto.html) 
+# if included. I've tried to use a subset of the same api.j 
+# TODO test jquery.scrollTo compatibility
 $.scrollTo ?= (selector,settings)->
 	settings = $.extend
 		offset: {top:0}, 
