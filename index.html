@@ -8,6 +8,11 @@
 	<link rel="stylesheet" href="validation.css"/>
 </head>
 <body>
+	<h1>Revalidate - jQuery Validation Framework</h1>
+	<a href="http://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="jethrolarson">Tweet</a>
+	<div>
+		<a href="docs/validation.html">Annotated Source</a>
+	</div>
   <form action="">
     <div class="field">
 			<label>Required Input</label>
@@ -34,7 +39,7 @@
     </div>
     <div class="field" id="ridiculous">
       <strong>Weird validation requirement: One of these fields must be filled in with a numeric value greater than 5</strong>
-      <div><input> <input> <input></div>
+      <div><input type="text"/> <input type="text"/> <input type="text"/></div>
     </div>
     <button type="submit">Dominate</button>
   </form>
@@ -44,9 +49,10 @@
     <input type="text" class="required"/>
     <input type="submit" value="Submit"/>
   </form>
-
+	<script src="http://platform.twitter.com/widgets.js"></script>
   <script src="js/libs/jquery.js"></script>
   <script src="js/compiled/validation.js"></script>
-  <script src="js/compiled/app.js"></script>
+  <script src="js/compiled/app.js" defer></script>
+	
 </body>
 </html>
