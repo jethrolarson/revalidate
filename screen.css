@@ -1,5 +1,17 @@
 /* Styles to make the Demo cooler, not required for revalidate to work correctly */
-html,body{font: 14px/1.5 sans-serif;}
+html,body{
+	margin:0; padding:0;
+	font: 14px/1.5 sans-serif;
+	height: 100%}
+body{text-align: center;}
+#page{
+	text-align: left;
+	max-width: 480px;
+	min-height: 100%;
+	padding: 1px 10px;
+	margin: 0 auto;
+	box-shadow: 0 0 10px rgba(0,0,0,.5)}
+fieldset{margin: 1em 0;}
 .field{margin: 1em 0;}
 .field label{display: block;}
 .cb label{display: inline;}
