@@ -1,6 +1,6 @@
 ReValidate jQuery Framework
 ===========================
-Author: [@jethrolarson](http://twitter.com/jethrolarson)
+Author: [Jethro Larson](http://github.com/jethrolarson) [@jethrolarson](http://twitter.com/jethrolarson)
 
 License
 -------
@@ -9,15 +9,28 @@ As is, no warranty. Authors of the code will not be held responsible for any pro
 
 Intro
 -----
-After trying several different validation libraries I was unable to find one that worked well for obtuse validation cases while still having a good UI. I've attempted to create a validation framework that will allow you to write any new strange rules easilly without pain. I also wanted to separate events for initial form validation from post-error validation. That allows me to avoid telling people they are doing it wrong before they've had a chance to enter valid input, while still allowing me to remove validation error messages the instant that the field becomes valid.
+After trying several different validation libraries I was unable to find one that worked well for obtuse validation cases while still having a good UI. I've attempted to create a validation framework that will allow you to write any new strange rules easilly and without pain. 
 
-Since the goal is to be a framework not a library, validation.coffee doesn't do anything by itself.
-app.coffee has some example validation rules and usage, but you may want to adapt that to your application's needs.
+I also wanted to separate events for initial form validation from post-error validation. That allows me to avoid telling people they are doing it wrong before they've had a chance to enter valid input, while still allowing me to remove validation error messages the instant that the field becomes valid.
+
+* `validation.coffee` : The validation framework used to create your own validation rules.  
+* `app.coffee` : An example validation library that uses the framework.
+
+[Annotated Source](docs/validation.html)
+----------------------------------------
 
 Brief docs
 ----------
+## $.fn.formValidator
+Set up validation on a form element.  
+[FormValidator Settings](docs/validation.html#section-23)
+
+### Example: 
+
+    $('form').formValidator();
+
 ## $.fn.fieldValidator (settings)
-jQuery plugin to instantiate a field validator.
+Create field validation rules and attach them to elements.  
 [FieldValidator Settings](docs/validation.html#section-4)
 
 ### Example:
@@ -29,17 +42,6 @@ jQuery plugin to instantiate a field validator.
       revalidateOn: 'blur keyup',
       message: 'This field is Required'
     });
-
-
-## $.fn.formValidator
-[FormValidator Settings](docs/validation.html#section-23)
-
-### Example: 
-
-    $('form').formValidator();
-
-[Annotated Source](docs/validation.html)
-----------------------------------------
 
 Contribute
 ----------
