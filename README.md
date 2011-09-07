@@ -17,26 +17,8 @@ app.coffee has some example validation rules and usage, but you may want to adap
 Brief docs
 ----------
 ## $.fn.fieldValidator (settings)
-
-    FieldValidator.defaultSettings = {
-      /* Error message to display */
-      message: 'There is an error with this field',
-      /* List of space-separated events to validate on. e.g. "blur click mouseenter" */
-      validateOn: '',
-      /* 
-      	Same as validateOn except will only validate if the field is already in error. 
-      	Use case: You might want to immediately remove an error 
-      	message if a user enters a correct value but not show an error message until 
-      	they click submit. 
-      	*/
-      revalidateOn: '',
-      /* If true then validation will be skipped on hidden fields */
-      ignoreHidden: true,
-      /* Default validator: does a falsy check on the value */
-      validator: function() {
-        return !!this.value;
-      }
-    };
+jQuery plugin to instantiate a field validator.
+[FieldValidator Settings](docs/validation.html#section-4)
 
 ### Example:
 
@@ -50,19 +32,14 @@ Brief docs
 
 
 ## $.fn.formValidator
-
-    FormValidator.defaultSettings = {
-    	scrollToErrorField: true
-    	### How long the error animated scroll takes, 0 is instant ###
-    	scrollDuration: 100
-
-    	### Prevents submitting the form multiple times if a request has already been sent ###
-    	throttleSubmission: true
-    }
+[FormValidator Settings](docs/validation.html#section-23)
 
 ### Example: 
 
     $('form').formValidator();
+
+[Annotated Source](docs/validation.html)
+----------------------------------------
 
 Contribute
 ----------
