@@ -37,7 +37,7 @@ FieldValidator = (field, settings)->
 		validator: (fv)-> 
 			!!this.value
 		
-		# List of events to show the validation method on
+		# List of events to show the validation method on (editing this is not recommended)
 		showMessageOn: 'focusin'
 		hideMessageOn: 'blur'
 	}, settings)
@@ -139,6 +139,8 @@ FormValidator.prototype = $.extend FormValidator.prototype,
 		@
 	valid: false
 	formSubmitting: false
+	# Can toggle this property to disable validation
+	disabled: false
 	validate: ->
 		@valid = true
 		for field in @fieldValidators
@@ -155,6 +157,9 @@ FormValidator.prototype = $.extend FormValidator.prototype,
 	bindEvents: ->
 		@$form.bind
 			submit: =>
+				# Skip validation if formValidator is disabled
+				if @disabled
+					return true
 				if @settings.throttleSubmission and @formSubmitting
 					#should there be a timeout in case of error?
 					alert 'Just a second; form is already submitting.'

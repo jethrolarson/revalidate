@@ -106,6 +106,7 @@
     },
     valid: false,
     formSubmitting: false,
+    disabled: false,
     validate: function() {
       var field, _i, _len, _ref;
       this.valid = true;
@@ -135,6 +136,9 @@
       return this.$form.bind({
         submit: __bind(function() {
           var $firstInvalid;
+          if (this.disabled) {
+            return true;
+          }
           if (this.settings.throttleSubmission && this.formSubmitting) {
             alert('Just a second; form is already submitting.');
             return false;

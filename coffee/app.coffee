@@ -10,15 +10,11 @@ $ ->
 	$('.cb.required').fieldValidator
 		validator: -> $(this).find(':checked').length
 		revalidateOn: 'click'
-		showMessageOn: 'mouseenter focusin'
-		hideMessageOn: 'mouseleave blur'
 		message: 'You must agree'
 		
 	$('.radGroup.required').fieldValidator
 		validator: (fv)-> fv.$field.find(':checked').length
 		revalidateOn: 'click'
-		showMessageOn: 'mouseenter focusin'
-		hideMessageOn: 'mouseleave blur'
 		message: 'Please choose one'
 		
 	$('select.required').fieldValidator

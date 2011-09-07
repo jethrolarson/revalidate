@@ -13,8 +13,6 @@
         return $(this).find(':checked').length;
       },
       revalidateOn: 'click',
-      showMessageOn: 'mouseenter focusin',
-      hideMessageOn: 'mouseleave blur',
       message: 'You must agree'
     });
     $('.radGroup.required').fieldValidator({
@@ -22,8 +20,6 @@
         return fv.$field.find(':checked').length;
       },
       revalidateOn: 'click',
-      showMessageOn: 'mouseenter focusin',
-      hideMessageOn: 'mouseleave blur',
       message: 'Please choose one'
     });
     $('select.required').fieldValidator({
