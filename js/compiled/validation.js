@@ -9,9 +9,11 @@
       validateOn: '',
       revalidateOn: '',
       ignoreHidden: true,
-      validator: function() {
+      validator: function(fv) {
         return !!this.value;
-      }
+      },
+      showMessageOn: 'focusin',
+      hideMessageOn: 'blur'
     }, settings);
     if (this.settings.validator) {
       this.validator = this.settings.validator;
@@ -45,43 +47,41 @@
       return this.valid;
     },
     check: function() {
-      if (this.disabled || this.settings.ignoreHidden && this.$field.is(':hidden')) {
+      if (this.disabled || this.field.disabled || (this.settings.ignoreHidden && this.$field.is(':hidden'))) {
         return this.valid = true;
       }
-      return this.valid = this.field.disabled || this.validator.call(this.field, this);
+      return this.valid = this.validator.call(this.field, this);
+    },
+    showMessage: function() {
+      var h, pos;
+      if (!this.valid) {
+        $tooltipContent.html(this.settings.message);
+        pos = this.$field.offset();
+        $tooltip.show();
+        h = $tooltip.outerHeight();
+        if (pos.top - h < window.scrollY) {
+          $tooltip.addClass('bottom');
+          pos.top += this.$field.outerHeight();
+        } else {
+          $tooltip.removeClass('bottom');
+          pos.top -= h;
+        }
+        return $tooltip.css(pos);
+      }
     },
     bindEvents: function() {
-      this.$field.bind({
-        validate: __bind(function() {
-          this.validate();
-          return true;
-        }, this),
-        focusin: __bind(function() {
-          var h, pos;
-          if (!this.valid) {
-            $tooltipContent.html(this.settings.message);
-            pos = this.$field.offset();
-            $tooltip.show();
-            h = $tooltip.outerHeight();
-            if (pos.top - h < window.scrollY) {
-              $tooltip.addClass('bottom');
-              pos.top += this.$field.outerHeight();
-            } else {
-              $tooltip.removeClass('bottom');
-              pos.top -= h;
-            }
-            return $tooltip.css(pos);
-          }
-        }, this),
-        'focusout valid': __bind(function() {
-          return $tooltip.hide();
-        }, this)
-      });
-      this.settings.validateOn && this.$field.bind(this.settings.validateOn, __bind(function() {
+      return this.$field.bind('validate', __bind(function() {
+        return this.validate();
+      }, this)).bind(this.settings.showMessageOn, __bind(function() {
+        this.showMessage();
+        return true;
+      }, this)).bind(this.settings.hideMessageOn + ' valid', __bind(function() {
+        $tooltip.hide();
+        return true;
+      }, this)).bind(this.settings.validateOn, __bind(function() {
         this.validate();
         return true;
-      }, this));
-      return this.settings.revalidateOn && this.$field.bind(this.settings.revalidateOn, __bind(function() {
+      }, this)).bind(this.settings.revalidateOn, __bind(function() {
         !this.valid && this.validate();
         return true;
       }, this));

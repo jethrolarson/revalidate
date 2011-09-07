@@ -2,28 +2,27 @@ $ ->
   #Attach FormValidator to an element
 	$('form').formValidator()
 
-	$(':text.required').fieldValidator 
-		validator: -> $.trim(@value)
+	$(':text.required').fieldValidator
+		validator: ->  $.trim this.value
 		revalidateOn: 'blur keyup'
 		message: 'This field is Required'
 
-	$(':checkbox.required').fieldValidator
-		validator: -> @checked
-		position: (fv)->
-			fv.$field.parent().append fv.$errorMessage
+	$('.cb.required').fieldValidator
+		validator: -> $(this).find(':checked').length
 		revalidateOn: 'click'
+		showMessageOn: 'mouseenter focusin'
+		hideMessageOn: 'mouseleave blur'
 		message: 'You must agree'
 		
 	$('.radGroup.required').fieldValidator
-		validator: (fv)->
-			fv.$field.find(':checked').length
+		validator: (fv)-> fv.$field.find(':checked').length
 		revalidateOn: 'click'
-		position: 'after'
+		showMessageOn: 'mouseenter focusin'
+		hideMessageOn: 'mouseleave blur'
 		message: 'Please choose one'
 		
 	$('select.required').fieldValidator
-		validator: ->
-			@selectedIndex > 0
+		validator: -> @selectedIndex > 0
 
 	### mm/dd/yyyy ###
 	$('.date').fieldValidator
@@ -47,7 +46,6 @@ $ ->
 				val = +input.value
 				valid = true if val > 5
 			valid
-		position: 'append'
 		revalidateOn: 'focusout'
 		message: "you didn't do the thing"
 	@

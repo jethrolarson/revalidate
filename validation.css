@@ -2,8 +2,6 @@
 .invalid{
 	background: #ffc;
 }
-/* invalid input styles */
-input[type=checkbox].invalid{outline: red 1px solid}
 
 /* validation message styles */
 #validatorTooltip{position: absolute; display: none;}

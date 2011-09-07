@@ -5,10 +5,12 @@
 # License: MIT, GPL, or WTFPL  
 # Author: [@JethroLarson](http://twitter.com/jethrolarson)
 
+# ### Error Tooltip HTML. 
+# We only need one because only one message is shown at a time.
 $tooltipContent = $ '<div id="validatorTooltipContent"/>'
 $tooltip = $('<div id="validatorTooltip"/>').append($tooltipContent).append('<div class="carrotBottom"><div></div></div>').prepend('<div class="carrotTop"><div></div></div>').appendTo 'html'
 
-# Field Validator 
+# Field Validator Constructor
 # -------------------------------
 # This object controlls events related to field validation
 FieldValidator = (field, settings)->
@@ -29,8 +31,15 @@ FieldValidator = (field, settings)->
 		# If true then validation will be skipped on hidden fields
 		ignoreHidden: true 
 
-		# Default validator: does a falsy check on the value
-		validator: -> !!this.value 
+		# ###Default validator: does a falsy check on the value
+		# `this` is the element
+		# `fv` is the fieldValidator instance
+		validator: (fv)-> 
+			!!this.value
+		
+		# List of events to show the validation method on
+		showMessageOn: 'focusin'
+		hideMessageOn: 'blur'
 	}, settings)
 	@validator = @settings.validator if @settings.validator
 	@field = field
@@ -41,7 +50,7 @@ FieldValidator = (field, settings)->
 FieldValidator.prototype = $.extend FieldValidator.prototype,
 	valid: true
 	disabled: false
-	# verifies that the field is valid and shows validation messages if necessary
+	# Calls @check and sets the error classes and prepares any error messages
 	validate: ->
 		@check()
 		fieldValid = true
@@ -63,41 +72,45 @@ FieldValidator.prototype = $.extend FieldValidator.prototype,
 
 	# checks, sets, and returns this.valid
 	check: ->
-		if @disabled or @settings.ignoreHidden and @$field.is(':hidden')
+		# Assumes disabled or hidden fields are valid
+		if @disabled or @field.disabled or (@settings.ignoreHidden and @$field.is(':hidden'))
 			return @valid = true 
-		return @valid = @field.disabled or @validator.call(@field, @)
+		# Calls validator
+		return @valid =  @validator.call(@field, @)
+	
+	# Displays the fieldValidator tooltip
+	showMessage: ->
+		if not @valid
+			$tooltipContent.html @settings.message 
+			#TODO - take into consideration the body position:relative problem
+			#position the tooltip
+			pos = @$field.offset()
+			$tooltip.show()
+			h = $tooltip.outerHeight()
+			#if it would be offscreen put it below
+			if pos.top - h < window.scrollY
+				$tooltip.addClass 'bottom'
+				pos.top += @$field.outerHeight()
+			else #else on top of field
+				$tooltip.removeClass 'bottom'
+				pos.top -= h
+			$tooltip.css pos
 
 	# Binds events to this.$field
 	bindEvents: ->
-		@$field.bind {
-			validate: =>
-				@validate()
-				true
-			#show message
-			focusin: =>
-				if not @valid
-					$tooltipContent.html @settings.message 
-					#TODO - take into consideration the body position:relative problem
-					#position the tooltip
-					pos = @$field.offset()
-					$tooltip.show()
-					h = $tooltip.outerHeight()
-					#if it would be offscreen put it below
-					if pos.top - h < window.scrollY
-						$tooltip.addClass 'bottom'
-						pos.top += @$field.outerHeight()
-					else #else on top of field
-						$tooltip.removeClass 'bottom'
-						pos.top -= h
-					$tooltip.css pos
-			'focusout valid': =>
-				$tooltip.hide()
-		}		
-		@settings.validateOn and @$field.bind(@settings.validateOn, => 
+		# Firing a "validate" event on the element calls the fieldValidator's validate method. 
+		@$field.bind('validate', => 
+			@validate()
+		).bind(@settings.showMessageOn, =>
+			@showMessage()
+			true
+		).bind(@settings.hideMessageOn+' valid', =>
+			$tooltip.hide()
+			true
+		).bind(@settings.validateOn, => 
 			@validate()
 			true
-		)
-		@settings.revalidateOn and @$field.bind(@settings.revalidateOn, => 
+		).bind(@settings.revalidateOn, => 
 			not @valid and @validate()
 			true
 		)
@@ -166,7 +179,7 @@ FormValidator.prototype = $.extend FormValidator.prototype,
 # jQuery FormValidator plugin
 # ---------------------------
 # Use this on any forms that you want to validate.
-# See [FormValidator Default Settings](#form-validator-settings)
+# See [FormValidator Default Settings](#section-4)
 $.fn.formValidator = -> 
 	@each ->
 		# FormValidator Instance is stored in jquery data
@@ -176,7 +189,8 @@ $.fn.formValidator = ->
 # jQuery FieldValidator plugin
 # ----------------------------
 # Use this to add new rules to your validation library
-# settings - See [FieldValidator Default Settings](#field-validator-settings). 
+# Selector determines the element used for validator and placement of error message.
+# settings - See [FieldValidator Default Settings](#section-23). 
 $.fn.fieldValidator = (settings)->
 	@each ->
 		fieldValidator = new FieldValidator @, settings

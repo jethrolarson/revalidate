@@ -8,14 +8,13 @@
       revalidateOn: 'blur keyup',
       message: 'This field is Required'
     });
-    $(':checkbox.required').fieldValidator({
+    $('.cb.required').fieldValidator({
       validator: function() {
-        return this.checked;
-      },
-      position: function(fv) {
-        return fv.$field.parent().append(fv.$errorMessage);
+        return $(this).find(':checked').length;
       },
       revalidateOn: 'click',
+      showMessageOn: 'mouseenter focusin',
+      hideMessageOn: 'mouseleave blur',
       message: 'You must agree'
     });
     $('.radGroup.required').fieldValidator({
@@ -23,7 +22,8 @@
         return fv.$field.find(':checked').length;
       },
       revalidateOn: 'click',
-      position: 'after',
+      showMessageOn: 'mouseenter focusin',
+      hideMessageOn: 'mouseleave blur',
       message: 'Please choose one'
     });
     $('select.required').fieldValidator({
@@ -62,7 +62,6 @@
         }
         return valid;
       },
-      position: 'append',
       revalidateOn: 'focusout',
       message: "you didn't do the thing"
     });
