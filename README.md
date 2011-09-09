@@ -23,7 +23,7 @@ Brief docs
 ----------
 ## $.fn.formValidator
 Set up validation on a form element.  
-[FormValidator Settings](docs/validation.html#section-23)
+[FormValidator Settings](http://jethrolarson.github.com/revalidate/docs/validation.html#section-23)
 
 ### Example: 
 
@@ -31,7 +31,7 @@ Set up validation on a form element.
 
 ## $.fn.fieldValidator (settings)
 Create field validation rules and attach them to elements.  
-[FieldValidator Settings](docs/validation.html#section-4)
+[FieldValidator Settings](http://jethrolarson.github.com/revalidate/docs/validation.html#section-4)
 
 ### Example:
 
