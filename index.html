@@ -1,68 +1,60 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-	<title>Revalidate - jQuery validation Framework</title>
-	<link rel="stylesheet" href="screen.css"/>
-	<link rel="stylesheet" href="validation.css"/>
-</head>
-<body>
-	<div id="page">
-		<h1>Revalidate - jQuery Validation Framework</h1>
-		<!--Took this ribbon from http://learnboost.github.com/stylus/ which is MIT/GPL I hope this usage is okay-->
-		<div id="ribbon"><a href="http://github.com/jethrolarson/revalidate">Fork me on GitHub</a></div>
-		<a href="http://twitter.com/share" class="twitter-share-button" data-count="horizontal" data-via="jethrolarson">Tweet</a>
-		<div>
-			<a href="docs/validation.html">Annotated Source</a>
+---
+layout: default
+title: Revalidate - jQuery Validation Framework
+headInclude: '<link rel="stylesheet" href="src/validation.css"/>'
+footInclude: '
+  <script src="src/js/libs/jquery.js"></script>
+	<script src="src/js/validation.js"></script>
+	<script src="src/js/validation.lib.js"></script>
+	
+	<script>
+		/*ajax test*/
+		$(function(){
+			setTimeout(function(){
+				$("#ajaxForm").load("ajaxform.html");
+			},2000);
+		});
+	</script>
+'
+---
+
+<div>
+	<a href="/README.html">README</a>
+</div>
+<form action="" class="validate">
+	<fieldset>
+		<legend>Form 1</legend>
+		<div class="field">
+			<label>Required Input</label>
+			<input type="text" class="required" name="requiredtext" placeholder="Required Text" data-error="Server has a problem with this field"/>
 		</div>
-		<form action="">
-			<fieldset>
-				<legend>Form 1</legend>
-				<div class="field">
-					<label>Required Input</label>
-					<input type="text" class="required" name="requiredtext" placeholder="Required Text"/>
-				</div>
-		
-				<!--Shouldn't validate invisible fields by default, this can be overridden-->
-				<input type="text" class="required" style="display:none" name="hidden requiredtext"/>
-		
-				<div class="field">
-					<input type="text" class="required date" name="requiredtext" placeholder="Date: MM/DD/YYYY"/>
-				</div>
-				<div class="field cb required">
-					<input id="terms" type="checkbox" name="terms" />
-					<label for="terms">I agree to terms</label>
-				</div>
-				<div class="field">
-					<strong>Sex</strong>
-					<ul class="radGroup required">
-						<li><input type="radio" name="rg" id="radioA"><label for="radioA">Male</label></li>
-						<li><input type="radio" name="rg" id="radiob"><label for="radiob">Female</label></li>
-						<li><input type="radio" name="rg" id="radioc"><label for="radioc">Devices</label></li>
-					</ul>
-				</div>
-				<div class="field" id="ridiculous">
-					<strong>Weird validation requirement: One of these fields must be filled in with a numeric value greater than 5</strong>
-					<div><input type="text"/> <input type="text"/> <input type="text"/></div>
-				</div>
-				<button type="submit">submit</button>
-			</fieldset>
-		</form>
-	
-		<form action="">
-			<fieldset>
-				<legend>Separate form</legend>
-				<input type="text" class="required"/>
-				<input type="submit" value="Submit"/>
-			</fieldset>
-		</form>
-	</div>
-	
-	<script src="http://platform.twitter.com/widgets.js"></script>
-	
-	<script src="js/libs/jquery.js"></script>
-	<script src="js/compiled/validation.js"></script>
-	<script src="js/compiled/app.js" defer></script>
-</body>
-</html>
+
+		<!--Shouldn't validate invisible fields by default. This can be overridden-->
+		<input type="text" class="required" style="display:none" name="hidden requiredtext"/>
+
+		<div class="field">
+			<input type="text" class="required date" name="requiredtext" placeholder="Date: MM/DD/YYYY"/>
+		</div>
+		<div class="field cb required">
+			<input id="terms" type="checkbox" name="terms" />
+			<label for="terms">I agree to terms</label>
+		</div>
+		<div class="field">
+			<strong>Sex</strong>
+			<ul class="radGroup required">
+				<li><input type="radio" name="rg" id="radioA"><label for="radioA">Male</label></li>
+				<li><input type="radio" name="rg" id="radiob"><label for="radiob">Female</label></li>
+				<li><input type="radio" name="rg" id="radioc"><label for="radioc">Devices</label></li>
+			</ul>
+		</div>
+		<div class="field">
+			<label>Text required if box checked</label>
+			<input type="checkbox" id="reqIfChecked" /><input class="requiredIfTargetChecked" data-target="#reqIfChecked" type="text" />
+			
+		</div>
+		<button type="submit">submit</button>
+	</fieldset>
+</form>
+<div id="ajaxForm">
+	Ajaxing a form in...
+</div>
