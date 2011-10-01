@@ -13,7 +13,7 @@
 // 
 // Events for validation are split into two groups: initial validation and post-error validation. That allows you to avoid giving people error messages before they've had a chance to enter valid input, while still you to remove validation error messages the *instant* that the field becomes valid.  
 // 
-// * [validation.lib.coffee](validation.lib.html) : An example validation library that uses the framework.
+// * [validation.lib.js](validation.lib.html) : An example validation library that uses the framework.
 // * [Examples](/examples/index.html)
 //
 // ----
@@ -35,7 +35,7 @@
 	window.FieldValidator = function(selector, settings) {
 		// ### FieldValidator Default Settings
 		this.settings = $.extend({
-			// Error message to display
+			// Error message to display. Can also be a function that returns a message.
 			message: 'There is an error with this field',
 			// List of space-separated events to validate on. e.g. "blur click mouseenter"
 			validateOn: '',
@@ -46,7 +46,7 @@
 			revalidateOn: '',
 			// If true then validation will be skipped on hidden fields
 			ignoreHidden: true,
-			// ###Default validator: does a falsy check on the value
+			// ### Default validator: does a falsy check on the value
 			// `this` is the element
 			// `fv` is the fieldValidator instance
 			validator: function(fv) {
@@ -72,21 +72,17 @@
 		disabled: false,
 		// Calls `@check` and sets the error classes and prepares any error messages
 		validate: function(field) {
-			var fieldValid, fvs, fv, i, len, 
-			    $field = $(field);
-			fvValid = this.check(field);
+			var fieldValid,
+			    $field = $(field),
+			    fvValid = this.check(field);
+			!fvValid && $field.attr('aria-label', typeof this.settings.message == 'string' ? this.settings.message : this.settings.message.call(field,this));
 			fieldValid = true;
-			fvs = $field.data('fieldvalidators') || {};
-			$.each(fvs,function(k,v){
+			$.each(($field.data('fieldvalidators') || {}),function(k,v){
 				if(!v) fieldValid = false;
 			});
 			$field.toggleClass('invalid', !fieldValid);
 			// set error message
-			if (!fvValid) {
-				$field.attr('aria-label', this.settings.message);
-			} else {
-				$field.removeAttr('aria-label').trigger('valid');
-			}
+			fieldValid && $field.removeAttr('aria-label').trigger('valid');
 			return fvValid;
 		},
 		// Trigger validation on all matching fields that are a child of `form`
@@ -99,20 +95,22 @@
 		// Checks to see if this field is valid without changing anything
 		check: function(field) {
 			var $field = $(field),
-			    fvs = $field.data('fieldvalidators') || {};
-			if (this.disabled || field.disabled || (this.settings.ignoreHidden && $field.is(':hidden'))) {
-				return fvs[fvIndex] = true;
+			    fvs = $field.data('fieldvalidators') || {},
+			    valid = true;
+			if (!(this.disabled || field.disabled || (this.settings.ignoreHidden && $field.is(':hidden')))) {
+				valid = this.validator.call(field, this);
 			}
-			fvs[fvIndex] = this.validator.call(field, this);
+			fvs[this.fvIndex] = valid;
 			$field.data('fieldvalidators',fvs);
-			return fvs[fvIndex];
+			return valid;
 		},
 		// Displays the fieldValidator bubble message
 		showMessage: function(field) {
 			var h, pos, msg, 
 			    $field = $(field);
 			if ($field.hasClass('invalid')) {
-				$tooltipContent.html(this.settings.message);
+				// If message is a function call it for the value
+				$tooltipContent.html($field.attr('aria-label'));
 				// Position the bubble
 				pos = $field.offset();
 				$tooltip.show();

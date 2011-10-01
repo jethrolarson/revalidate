@@ -41,7 +41,7 @@
 				var val = $(this).val();
 				return $.trim(val).length;
 			},
-			validateOn: 'blur keyup',
+			revalidateOn: 'blur keyup',
 			message: 'Required'
 		});
 		// Required Checkbox
@@ -141,16 +141,16 @@
 		});
 		
 		// Hack for integrating server-side errors
-		$('.validate [data-error]').each(function(){
-			formValidator.addFieldValidator(this.selector,{
-				validator: function(){
-					var hasError = $(this).attr('data-error');
-					$(this).removeAttr('data-error').die('init');
-					return !hasError;
-				},
-				validateOn: 'init',
-				revalidateOn: '',
-				message: $(this).data('error')
-			});
+		formValidator.addFieldValidator('.validate [data-error]',{
+			validator: function(){
+				var hasError = $(this).attr('data-error');
+				$(this).attr('data-error','').data('serverErrorMessage',hasError).die('init');
+				return !hasError;
+			},
+			validateOn: 'init',
+			revalidateOn: 'focusout',
+			message: function(){
+				return $(this).data('serverErrorMessage');
+			}
 		});
 	});
