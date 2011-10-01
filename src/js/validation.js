@@ -14,13 +14,11 @@
 // Events for validation are split into two groups: initial validation and post-error validation. That allows you to avoid giving people error messages before they've had a chance to enter valid input, while still you to remove validation error messages the *instant* that the field becomes valid.  
 // 
 // * [validation.lib.js](validation.lib.html) : An example validation library that uses the framework.
-// * [Examples](/examples/index.html)
+// * [Examples](../index.html)
 //
 // ----
 //
 (function($) {
-	// === Validator Framework ===
-	// Here's the original: http://jethrolarson.github.com/revalidate
 	
 	var $tooltip, $tooltipContent, FieldValidator, FormValidator, fvIndex = 0, _ref;
 	

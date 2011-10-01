@@ -1,5 +1,7 @@
-//Validator Library
+
+// Validator Library for jQuery Revalidate
 //==========================
+(function($){
 	function isPositiveInteger(val){
 		return (/^\d+$/).test(val) && +val >= 0;
 	}
@@ -154,3 +156,4 @@
 			}
 		});
 	});
+})(jQuery);
