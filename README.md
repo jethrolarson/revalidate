@@ -28,12 +28,10 @@ Example Usage:
 
 ### Set up validation on a form:
 
-{% highlight js %}
     var formValidator = new FormValidator('form');
-{% endhighlight %}
+
 ### Create and attache a validation rule:
 
-{% highlight js %}
     formValidator.addFieldValidator('.requiredTextbox',{
       validator: function() {
         return $.trim(this.value);
@@ -41,7 +39,6 @@ Example Usage:
       revalidateOn: 'blur keyup',
       message: 'This field is Required'
     });
-{% endhighlight %}
 
 
 Contribute
