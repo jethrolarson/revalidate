@@ -41,6 +41,10 @@ Example Usage:
     });
 
 
+Specifying errors on load
+-------------------------
+Add a data-error attribute to field to make a field have an error on initial load. 
+
 Contribute
 ----------
 This is a new library so please report any bugs you find.
