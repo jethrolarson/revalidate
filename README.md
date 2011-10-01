@@ -48,7 +48,6 @@ This is a new library so please report any bugs you find.
 TODO
 ----
 * Set up QUnit for all the settings
-* Ease integration with server-side validation
 
 Other Projects
 --------------
