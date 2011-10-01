@@ -14,12 +14,12 @@ You've tried using several different validation libraries. Many were pretty good
 
 Revalidate is a validation **Framework**. It has been designed to make writing strange validation rules easy while still having great UI.
 
-* **[Demo](examples/index.html)**
-* **[Revalidate Framework](docs/validation.html)**
+* **[Demo](http://jethrolarson.github.com/revalidate/examples/index.html)**
+* **[Revalidate Framework](http://jethrolarson.github.com/revalidate/docs/validation.html)**
   The validation framework used to create your own validation rules.  
-* **[Revalidate Sample Library](docs/validation.lib.html)**
+* **[Revalidate Sample Library](http://jethrolarson.github.com/revalidate/docs/validation.lib.html)**
   An example validation library that uses the framework.
-* **[UX Specifications](docs/ux-specs.html)**
+* **[UX Specifications](http://jethrolarson.github.com/revalidate/docs/ux-specs.html)**
 
 
 
