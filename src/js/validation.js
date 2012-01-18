@@ -13,7 +13,7 @@
 //
 // Events for validation are split into two groups: initial validation and post-error validation. That allows you to avoid giving people error messages before they've had a chance to enter valid input, while still you to remove validation error messages the *instant* that the field becomes valid.
 //
-// * [revalidate.lib.js](revalidate.lib.html) : An example validation library that uses the framework.
+// * [validation.lib.js](validation.lib.html) : An example validation library that uses the framework.
 // * [Examples](../index.html)
 //
 // ----
