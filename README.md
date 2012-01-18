@@ -56,5 +56,3 @@ TODO
 Other Projects
 --------------
 [HTML5 Placeholder Augment and Polyfill](http://jethrolarson.github.com/placeholder-augment/) - It's HTML5 Placeholder Attribute except accessible, better, and cross-browser; while still being just as easy to use.
-
-†: Editing this is not recommended. 
