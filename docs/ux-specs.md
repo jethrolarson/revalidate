@@ -6,7 +6,7 @@ title: Revalidate UX Specifications
 UX Specifications
 -----------------
 * Validation should not affect the appearance of the form by default
-* Server-side validation is not yet integrated so if the form starts in an invalid state when page loads there will be no indication. However this is a planned feature.
+* Server-side validation is now functional. Add data-error="message" to the html of an element to force an error message on page load.
 * Fields are not limited to only form inputs. Rules can be attached to any html. This is specified by the selector in the field validators.
 * Rules for when to test and show validation messages are set by the `fieldValidator`.
 

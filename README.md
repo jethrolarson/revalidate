@@ -28,18 +28,17 @@ Example Usage:
 
 ### Set up validation on a form:
 
-    var formValidator = new FormValidator('form');
+    $('form').formValidator();
 
 ### Create and attache a validation rule:
 
-    formValidator.addFieldValidator('.requiredTextbox',{
+    $('form').fieldValidator('.requiredTextbox',{
       validator: function() {
         return $.trim(this.value);
       },
       revalidateOn: 'blur keyup',
       message: 'This field is Required'
     });
-
 
 Specifying errors on load
 -------------------------
