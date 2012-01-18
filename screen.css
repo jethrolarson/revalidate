@@ -5,7 +5,7 @@ html,body{
 	min-height: 100%;}
 html{	
 	background-image: -webkit-linear-gradient(top, #eee, #aaa 600px, #aaa);
-  background-image: -moz-linear-gradient(top, #eee, #aaa 600px, #aaa);
+	background-image: -moz-linear-gradient(top, #eee, #aaa 600px, #aaa);
 	background-image: linear-gradient(top, #eee, #aaa 600px, #aaa);
 }
 body{
@@ -50,29 +50,29 @@ input[type='number']{
 
 /* fork me ribbon */
 #ribbon {
-  position: absolute;
-  top: 2.5em;
-  left: -3.75em;
-  -webkit-transform: rotate(-45deg);
-  -moz-transform: rotate(-45deg);
-  background-color: #ddd;
-  padding: 1px 0;
-  overflow: hidden;
-  -moz-box-shadow: inset 1px 0px 3px rgba(0,0,0,0.3);
-  -webkit-box-shadow: inset 1px 0px 3px rgba(0,0,0,0.3);
-  box-shadow: inset 1px 0px 3px rgba(0,0,0,0.3);
+	position: absolute;
+	top: 2.5em;
+	left: -3.75em;
+	-webkit-transform: rotate(-45deg);
+	-moz-transform: rotate(-45deg);
+	background-color: #ddd;
+	padding: 1px 0;
+	overflow: hidden;
+	-moz-box-shadow: inset 1px 0px 3px rgba(0,0,0,0.3);
+	-webkit-box-shadow: inset 1px 0px 3px rgba(0,0,0,0.3);
+	box-shadow: inset 1px 0px 3px rgba(0,0,0,0.3);
 	border: 1px solid #ccc;
 	border-bottom-color: #fff;
 }
 #ribbon a {
-  color: #aaa;
+	color: #aaa;
 	font-weight: bold;
 	text-shadow: 1px -1px 1px #fff;
-  display: block;
-  margin: 0.05em 0;
-  padding: 0.5em 3.5em;
-  text-align: center;
-  text-decoration: none;
+	display: block;
+	margin: 0.05em 0;
+	padding: 0.5em 3.5em;
+	text-align: center;
+	text-decoration: none;
 }
 #ribbon a:hover{color: #888;}
 
