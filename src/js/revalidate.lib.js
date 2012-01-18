@@ -3,10 +3,12 @@
 //========================================
 // Feel free to add/remove these as needed for your application
 (function($){
+
+	// mm/dd/yyyy or m/d/yyyy
 	function isDate(val){
-		// mm/dd/yyyy or m/d/yyyy
 		return (/\d{1,2}\/\d{1,2}\/\d{4}/).test(val);
 	}
+	// hh:mm am
 	function isTime(val){
 		return (/[0-9]{1,2}:[0-9]{2} [apm]{2}/i).test(val);
 	}
@@ -19,14 +21,12 @@
 	}
 
 	function isPhoneNumber(val){
-		//copied from checkout/validate.cfc
 		//strip spaces and -
 		val = val.replace(/[\s\-]*/g,'');
 		return (/^1?(?:\d{3})\d{7}(?:(?:x|ext)?\d{1,5})?$/i).test(val);
 	}
 
 	//US or Canada postalCode
-	//Partially copied from validate.cfc
 	function isPostalCode(val){
 		return (
 			//US ZIP
