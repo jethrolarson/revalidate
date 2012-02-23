@@ -20,7 +20,8 @@
 //
 
 (function($) {
-	var $tooltip, $tooltipContent, FieldValidator, FormValidator, formValidator, fvIndex = 0;
+	var $tooltip, $tooltipContent, FieldValidator, FormValidator, formValidator, fvIndex = 0,
+	rootElement;
 	
 	// ### Error Tooltip HTML
 	// We only need one because only one message is shown at a time.
@@ -132,17 +133,17 @@
 		// Binds live events to the selector
 		bindEvents: function() {
 			var that = this;
-			return $(this.selector).live(this.settings.showMessageOn, function(){
+			return $(rootElement).on(this.settings.showMessageOn, this.selector, function(){
 				return that.showMessage(this);
 			})
-			.live(this.settings.hideMessageOn + ' valid', function() {
+			.on(this.settings.hideMessageOn + ' valid', this.selector, function() {
 				return $tooltip.hide();
 			})
-			.live(this.settings.validateOn + ' validate', function() {
+			.on(this.settings.validateOn + ' validate', this.selector, function() {
 				that.validate(this);
 				return true;
 			})
-			.live(this.settings.revalidateOn, function() {
+			.on(this.settings.revalidateOn, this.selector, function() {
 				if($(this).hasClass('invalid')){
 					that.validate(this);
 				}
@@ -166,9 +167,11 @@
 			scrollOffset: -45,
 			// Confirms submitting the form multiple times if a request has already been sent
 			confirmResubmission: true,
-			confirmResubmissionMessage: 'Form is already submitting. Do you want to submit the form again?'
+			confirmResubmissionMessage: 'Form is already submitting. Do you want to submit the form again?',
+			rootElement: document
 		}, settings);
 		this.selector = selector;
+		rootElement = this.settings.rootElement;
 		this.fieldValidators = [];
 		this.bindEvents();
 		return this;
@@ -201,7 +204,7 @@
 		// Bind live events on the selector
 		bindEvents: function() {
 			var that = this;
-			return $(this.selector).live('submit', function(e) {
+			return $(rootElement).on('submit', this.selector, function(e) {
 				var $firstInvalid,
 					form = this,
 					$form = $(this);
