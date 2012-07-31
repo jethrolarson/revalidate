@@ -29,5 +29,5 @@ UX Specifications
 ### Other events:
 * Events listed in `fieldValidator.validateOn` will validate the field, hiding or showing indicators.
 * Events listed in `fieldValidator.revalidateOn` will validate the field ONLY if the field is currently displayed as invalid.
-* Events listed in `fieldValidator.showMessageOn` will show validation message bubble. (`default: focusin`) †
-* Events listed in `fieldValidator.hideMessageOn` will hide validation message bubble. (`default: focusout`) †
+* Events listed in `fieldValidator.showMessageOn` will show validation message bubble. (`default: focusin`)
+* Events listed in `fieldValidator.hideMessageOn` will hide validation message bubble. (`default: focusout`)
